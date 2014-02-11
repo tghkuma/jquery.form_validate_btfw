@@ -1,0 +1,8 @@
+# 無視ファイルリスト
+.idea/
+.sass-cache/
+
+*.bak
+*.BAK
+.DS_Store
+Thumbs.db
