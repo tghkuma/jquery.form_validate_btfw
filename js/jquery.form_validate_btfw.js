@@ -1,38 +1,6 @@
 /**
  * パラメータチェックプラグイン
  * (TwitterBootstrap3.x対応)
- *
- * 実行例
- *  $("フォーム").formValidate({ fields:[
- *       { name:'<フィールド名>', d_name:'<フィールド表示名>', rules:<ルール or ルール配列>'},
- *                       :
- *  ]});
- *
- * ルール
- *  'zip_ex':郵便番号(<フィールド名>と<フィールド名>_AFTERの2か所チェック)
- *  'ymd':年月日(name+"_Y", name+"_M", name+"_D")
- *  'email':E-Mail
- *  'zenkaku':全角
- *  'hankaku':半角
- *  'zen_katakana':全角カタカナ
- *  'hiragana':全角ひらがな
- *  'minlength:<数値>':最小文字数
- *  'maxlength:<数値>':最大文字数
- *  'numlength:<数値>[,<数値>]':最大文字数[最小～最大文字数]
- *  'number':数値
- *  'numlength:<数値>':数値桁数指定
- *  'min:<数値>':最小値
- *  'max:<数値>':最大値
- *  'range:<最小値>,<最大値>':数値範囲
- *  'range:[<最小値>,<最大値>]':数値範囲
- *  'date':日付
- *  'datetime':日時
- *  'time':時間
- *  'zip':郵便番号
- *  'date_ex':日付([YYYY/MM/DD] or [YYYY/MM] or [YYYY]の書式でチェックする)
- *  'regexp:<正規表現>,<フラグ>,<エラーメッセージ>':正規表現
- *      <フラグ>,<エラーメッセージ>は省略可
- *      正規表現中に「,」が含まれる場合、JSON書式でも可
  */
 ;(function($) {
 	var pluginName = 'formValidate';
@@ -47,7 +15,16 @@
             errorType:null,
             clearError:null,
             setError:null,
-            focusError: true
+            focusError: true,
+            focusErrorSpeed: 'fast',
+            // メッセージ定義
+            'MESSAGE':{
+                'VALIDATE_ERROR':'入力に誤りがあります.',
+                // Required
+                'REQUIRED':'必須項目です.',
+                // input a numerical value
+                'NUMERICAL_VALUE':'数字を入力して下さい.'
+            }
 		};
 
 		var methods = {
@@ -93,13 +70,14 @@
              * @param name
              */
             focusError:function (name) {
+                var settings = $(this).data(pluginName+".settings");
                 var field = $(this).find("*[name='" + name + "']");
                 $(field).focus();
                 var p = $(field).offset().top - $(window).innerHeight()/2;
                 if (p < 0){
                     p = 0;
                 }
-                $('html,body').animate({ scrollTop: p }, 'fast');
+                $('html,body').animate({ scrollTop: p }, settings.focusErrorSpeed);
             },
 
             /**
@@ -235,7 +213,7 @@
 	            var result = true;
 	            var arrErrors = methods.getValidateResult.apply(this, [settings]);
 	            if (0 < arrErrors.length) {
-                    alert('入力に誤りがあります。\n' + helpers.join(arrErrors));
+                    alert(settings.MESSAGE.VALIDATE_ERROR+'\n' + helpers.join(arrErrors));
 		            result = false;
 	            }
 	            if ($.isFunction(settings.result)){
@@ -338,10 +316,10 @@
             /*
              * 必須項目
              */
-            required:function (field, objVal) {
+            required:function (field, objVal, params, settings) {
                 if (!objVal || !objVal.val() ||
                     (objVal.length && !objVal.filter(':checked').val())) {
-                    return '必須項目です.';
+                    return settings.MESSAGE.REQUIRED;
                 }
                 return null;
             },
@@ -522,10 +500,10 @@
 			/*
 			* 数値チェック
 			*/
-			number : function(field, objVal, params){
+			number : function(field, objVal, params, settings){
 				var val = objVal.val();
                 if(!$.isNumeric(val) || (val.indexOf(' ') != -1)){
-                    return '数字を入力して下さい.';
+                    return settings.MESSAGE.NUMERICAL_VALUE;
                 }
 				return null;
 			},

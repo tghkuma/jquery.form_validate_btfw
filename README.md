@@ -5,25 +5,43 @@
 
 ## 書式
 
-    $("フォーム").formValidate({ fields:[
-     { name:'<フィールド名>', d_name:'<フィールド表示名>', rules:<ルール or ルール配列>'},
-                        :<複数フィールド定義>
+    $("フォーム").formValidate({ <オプション>,fields:[
+     { name:'<フィールド名1>', d_name:'<フィールド表示名n>', rules:<ルール or ルール配列>'},
+                        :
+     { name:'<フィールド名n>', d_name:'<フィールド表示名n>', rules:<ルール or ルール配列>'},
     ]});
+
+    $("フォーム").formValidate('<メソッド名>');
 
 ### オプション
 
 | オプション名 | 初期値 | 機能 |
 | :--- | :--- | :--- |
 |result| null|結果を指定functionに渡す|
-|submit | 'validate' | |
+|submit | 'validate' | メソッド文字列 or function |
 |confirm_suffix | '_CONFIRM' | |
 |zip_suffix | '_AFTER' | |
 |fields | null | |
-|errorType:null | |
+|errorType:null | 'tb2'=TwitterBootstrap2形式でエラーを表示 |
 |clearError:null | |
 |setError:null | |
 |focusError | true | true=エラー時に最初のエラーにフォーカスする |
+|focusErrorSpeed | 'fast' | フォーカスの移動スピード(JQuery animationのspeedパラメータ) |
 
+### メソッド
+
+| オプション名 | 機能 |
+| :--- | :--- |
+| init | 初期化 |
+| dispError| エラー表示処理 |
+|focusError| 指定のエラーにフォーカス|
+|clearError| エラークリア処理 未指定時全て|
+|setError| 指定箇所エラー表示処理|
+|clearErrorTb| エラークリア処理|
+|setErrorTb| 指定箇所エラー表示処理|
+|validate| パラメータチェック|
+|validate_alert| パラメータチェック(エラー時アラート)|
+|getValidateResult| パラメータチェック結果取得|
 
 ### ルール
 
