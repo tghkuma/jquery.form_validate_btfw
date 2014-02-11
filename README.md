@@ -15,15 +15,14 @@
 | オプション名 | 初期値 | 機能 |
 | :--- | :--- | :--- |
 |result| null|結果を指定functionに渡す|
-
-submit: 'validate',
-confirm_suffix: '_CONFIRM',
-zip_suffix: '_AFTER',
-fields: null,
-errorType:null,
-clearError:null,
-setError:null,
-focusError: true
+|submit | 'validate' | |
+|confirm_suffix | '_CONFIRM' | |
+|zip_suffix | '_AFTER' | |
+|fields | null | |
+|errorType:null | |
+|clearError:null | |
+|setError:null | |
+|focusError | true | true=エラー時に最初のエラーにフォーカスする |
 
 
 ### ルール
