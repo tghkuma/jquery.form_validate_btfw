@@ -10,16 +10,16 @@ Submit時にValidateを行います。
 
 ````javascript
 $("フォーム").formValidate({ <オプション>,fields:[
- { name:'<フィールド名1>'[, d_name:'<フィールド表示名1>'][, rules:<ルール or ルール配列>']},
+ { name:'<フィールド名1>'[, d_name:'<フィールド表示名1>'][, rules:<ルール or ルール配列>]},
                     :
- { name:'<フィールド名n>', d_name:'<フィールド表示名n>', rules:<ルール or ルール配列>'},
+ { name:'<フィールド名n>', d_name:'<フィールド表示名n>', rules:<ルール or ルール配列>},
 ]});
 ````
 
 別のタイミングでValidateを行う場合。
 
 ````javascript
-$("フォーム").formValidate({ submit:null,fields:〜});
+$("フォーム").formValidate({ submit:null,fields:<フィールド定義配列>});
                     :
 $("フォーム").formValidate('validate');
 ````
