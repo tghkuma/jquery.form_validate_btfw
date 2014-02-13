@@ -93,7 +93,7 @@
                     methods.clearErrorTb2.apply(this, [name]);
                 }
                 else{
-                    methods.clearErrorTb.apply(this, [name]);
+                    methods.clearErrorBootstrap.apply(this, [name]);
                 }
             },
 
@@ -111,16 +111,16 @@
                     methods.setErrorTb2.apply(this, [name, message]);
                 }
                 else{
-                    methods.setErrorTb.apply(this, [name, message]);
+                    methods.setErrorBootstrap.apply(this, [name, message]);
                 }
             },
 
             /**
              * エラークリア処理
-             * (TwitterBootstrapレイアウト)
+             * (Bootstrap3レイアウト)
              * @param name 項目名(未指定時全て)
              */
-            clearErrorTb:function (name) {
+            clearErrorBootstrap:function (name) {
                 if (name){
                     var field = $(this).find("*[name='" + name + "']");
                     $(field).closest('.form-group')
@@ -136,11 +136,11 @@
 
             /**
              * 指定箇所エラー表示処理
-             * (TwitterBootstrapレイアウト)
+             * (Bootstrap3レイアウト)
              * @param name
              * @param message
              */
-            setErrorTb:function (name, message) {
+            setErrorBootstrap:function (name, message) {
                 var field = $(this).find("*[name='" + name + "']");
                 var error_message = '<span class="help-block error_message">' + message + '</span>';
                 $(field).closest('.form-group').addClass('has-error');

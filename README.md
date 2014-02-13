@@ -1,4 +1,4 @@
-# JQuery Form Validate(Bootstrap3/2.x)
+# JQuery Form Validate(Bootstrap3/TwitterBootstrap2.x)
 
 ## 解説
 このプログラムは、Bootstrap3形式のフォーム値のValidateを行います。
@@ -10,7 +10,7 @@ Submit時にValidateを行います。
 
 ````javascript
 $("フォーム").formValidate({ <オプション>,fields:[
- { name:'<フィールド名1>'[, d_name:'<フィールド表示名n>'][, rules:<ルール or ルール配列>']},
+ { name:'<フィールド名1>'[, d_name:'<フィールド表示名1>'][, rules:<ルール or ルール配列>']},
                     :
  { name:'<フィールド名n>', d_name:'<フィールド表示名n>', rules:<ルール or ルール配列>'},
 ]});
@@ -21,7 +21,7 @@ $("フォーム").formValidate({ <オプション>,fields:[
 ````javascript
 $("フォーム").formValidate({ submit:null,fields:〜});
                     :
-$("フォーム").formValidate('<メソッド名>');
+$("フォーム").formValidate('validate');
 ````
 
 ### オプション
@@ -29,15 +29,15 @@ $("フォーム").formValidate('<メソッド名>');
 オプション名 | 初期値 | 機能
 --- | --- | ---
 result| null|結果を指定functionに渡す
-submit | 'validate' | メソッド文字列 or function
-confirm_suffix | '_CONFIRM' | confirmルールの確認フィールドの接尾語
-zip_suffix | '_AFTER' |zip_exルールの4桁フィールドの接尾語
+submit |"validate" | Submit時に行う処理、メソッド文字列 or 関数 or null(何もしない)
+confirm_suffix|"\_CONFIRM" | confirmルールの確認フィールドの接尾語
+zip_suffix | "\_AFTER" |zip_exルールの4桁フィールドの接尾語
 fields | null |各種フィールド定義配列
-errorType| null | 'tb2'=TwitterBootstrap2形式でエラーを表示
+errorType| null | "tb2"=TwitterBootstrap2形式でエラーを表示
 clearError | null | エラークリア関数を指定
 setError| null | エラー設定関数を指定
 focusError | true | true=エラー時に最初のエラーにフォーカスする
-focusErrorSpeed | 'fast' | フォーカスの移動スピード(JQuery animationのspeedパラメータ) 
+focusErrorSpeed | "fast" | フォーカスのスクロール(JQuery animateのduration. "slow","normal","fast"またはミリ秒)
 
 ### フィールド定義
 
@@ -49,25 +49,29 @@ rules | Validateルール. 1件の場合はルール文字列.複数の場合は
 
 ### メソッド
 
-オプション名 | 機能
+下記の書式でメソッドを実行できる。
+
+````javascript
+$("フォーム").formValidate('メソッド名'[,<パラメータ1>[...,<パラメータn>]);
+````
+
+メソッド名 |パラメータ| 機能
 --- | ---
-init | 初期化
-dispError| エラー表示処理
-focusError| 指定のエラーにフォーカス
-clearError| エラークリア処理 未指定時全て
-setError| 指定箇所エラー表示処理
-clearErrorTb| エラークリア処理
-setErrorTb| 指定箇所エラー表示処理
-validate| パラメータチェック
-validate_alert| パラメータチェック(エラー時アラート)
-getValidateResult| パラメータチェック結果取得
+init |オプションオブジェクト| 初期化
+dispError|オプションオブジェクト| エラー表示処理
+focusError|name| nameフィールドにフォーカス
+clearError|name| nameフィールドのエラークリア.未指定時全てクリア
+setError|name, message| nameフィールドにmessageエラーを表示
+validate|オプションオブジェクト| パラメータチェック. 戻り値:true=正常, false=エラー
+validate_alert|オプションオブジェクト| パラメータチェック.エラー時alert()でエラー表示
+getValidateResult|オプションオブジェクト|パラメータチェック結果取得. 戻り値:エラーメッセージ配列
 
 ### ルール
 
 ルール名 | 機能
 ---|---
-zip_ex | 郵便番号.  <フィールド名>と<フィールド名>_AFTERの2か所をチェック
-ymd | 年月日.  name+"_Y", name+"_M", name+"_D"の３か所をチェック
+zip_ex | 郵便番号.  nameとname+"\_AFTER"の2か所をチェック
+ymd | 年月日.  name+"\_Y", name+"\_M", name+"\_D"の３か所をチェック
 email | E-Mail
 zenkaku | 全角
 hankaku | 半角
@@ -102,6 +106,28 @@ regexp:<正規表現>[,<フラグ>[,<エラーメッセージ>]] | 正規表現.
 ````
 'regexp:'+JSON.stringify(["^[a-z\\d,-_]+?$",'g',"入力可能文字は英数字,-_です"])
 ````
+
+## エラーメッセージ配列
+
+getValidateResultメソッドの戻り値はエラーメッセージは下記構造で返す。
+
+````javascript
+[
+ { name:'<フィールド名1>', d_name:'<フィールド表示名1>', message:'<エラーメッセージ>'},
+                    :
+ { name:'<フィールド名n>', d_name:'<フィールド表示名n>', message:'<エラーメッセージ>'},
+];
+````
+1フィールドに複数ルールが定義されている等、複数のエラーが出た場合は同じフィールド名で複数のエラーメッセージを返す。
+
+````javascript
+[
+ { name:'NAME_KANA', d_name:'名前(かな)', message:'全角ひらがなで入力してください.'},
+ { name:'NAME_KANA', d_name:'名前(かな)', message:'20文字以下で入力して下さい.'},
+                    :
+];
+````
+
 
 ## ライセンス
 
