@@ -36,8 +36,8 @@ fields | null |各種フィールド定義配列
 errorType| null | "tb2"=TwitterBootstrap2形式でエラーを表示
 clearError | null | エラークリア関数を指定
 setError| null | エラー設定関数を指定
-focusError | true | true=エラー時に最初のエラーにフォーカスする
-focusErrorSpeed | "fast" | フォーカスのスクロール(JQuery animateのduration. "slow","normal","fast"またはミリ秒)
+focusError | true | true=エラー時に最初のエラーにフォーカスする<br>メソッド:validate, validate_alertで利用
+focusErrorSpeed | "fast" | フォーカスのスクロール<br>(JQuery animateのduration. "slow","normal","fast"またはミリ秒)
 
 ### フィールド定義
 
@@ -62,9 +62,9 @@ dispError|オプションオブジェクト| エラー表示処理
 focusError|name| nameフィールドにフォーカス
 clearError|name| nameフィールドのエラークリア.未指定時全てクリア
 setError|name, message| nameフィールドにmessageエラーを表示
-validate|オプションオブジェクト| パラメータチェック. 戻り値:true=正常, false=エラー
-validate_alert|オプションオブジェクト| パラメータチェック.エラー時alert()でエラー表示
-getValidateResult|オプションオブジェクト|パラメータチェック結果取得. 戻り値:エラーメッセージ配列
+validate|オプションオブジェクト| パラメータチェック<br>戻り値:true=正常, false=エラー
+validate_alert|オプションオブジェクト| パラメータチェック<br>エラー時alert()でエラー表示
+getValidateResult|オプションオブジェクト|パラメータチェック結果取得<br>戻り値:エラーメッセージ配列
 
 ### ルール
 
