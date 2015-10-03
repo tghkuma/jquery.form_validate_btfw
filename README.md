@@ -43,9 +43,9 @@ focusErrorSpeed | "fast" | フォーカスのスクロール<br>(JQuery animate�
 
 属性名 | 機能
 --- | ---
-name | フィールド名.input,textarea,select等のnameを指定
+name | フィールド名.<br>input,textarea,select等のnameを指定
 d_name | 表示名.通常は未使用でvalidate_alertメソッドのalert表示で使用される
-rules | Validateルール. 1件の場合はルール文字列.複数の場合は配列で定義する
+rules | Validateルール.<br>1件の場合はルール文字列.複数の場合は配列で定義する
 
 ### メソッド
 
@@ -81,8 +81,8 @@ hiragana | 全角ひらがな
 minlength:<数値> | 最小文字数
 maxlength:<数値> | 最大文字数
 numlength:<数値>[,<数値>] | 最大文字数[最小～最大文字数]
-number | 数値
 numlength:<数値> | 数値桁数指定
+number | 数値
 min:<数値> | 最小値
 max:<数値> | 最大値
 checkbox:<最少選択数>[,<最大選択数>]| チェックボックスの選択チェック
@@ -93,8 +93,8 @@ date | 日付
 datetime | 日時
 time | 時間
 zip | 郵便番号
-date_ex | 日付.  [YYYY/MM/DD] or [YYYY/MM] or [YYYY]の書式でチェックする
-regexp:<正規表現>[,<フラグ>[,<エラーメッセージ>]] | 正規表現.  <フラグ>,<エラーメッセージ>は省略可
+date_ex | 日付.<br>[YYYY/MM/DD] or [YYYY/MM] or [YYYY]の書式でチェックする
+regexp:<正規表現>[,<フラグ>[,<エラーメッセージ>]] | 正規表現.<br><フラグ>,<エラーメッセージ>は省略可
 
 ### ルールの追加パラメータ書式
 
@@ -107,7 +107,7 @@ regexp:<正規表現>[,<フラグ>[,<エラーメッセージ>]] | 正規表現.
 但し、正規表現の様にパラメータ中に「,」が必要な場合は、配列のJSON形式で表記も可能
 
 ````
-'regexp:'+JSON.stringify(["^[a-z\\d,-_]+?$",'g',"入力可能文字は英数字,-_です"])
+'regexp:'+JSON.stringify(["^[a-z\\d,-_]+?$",'gi',"入力可能文字は英数字,-_です"])
 ````
 
 ## エラーメッセージ配列
@@ -134,4 +134,4 @@ getValidateResultメソッドの戻り値はエラーメッセージは下記構
 
 ## ライセンス
 
-Copyright &copy; 2014 [Team-Grasshopper](http://team-grasshopper.info/)
+Copyright &copy; 2014-2015 [Team-Grasshopper](http://team-grasshopper.info/)
