@@ -220,6 +220,10 @@
                 var arrErrors = methods.getValidateResult.apply(this, [settings]);
                 if (0 < arrErrors.length) {
                     alert(settings.MESSAGE.VALIDATE_ERROR+'\n' + helpers.join(arrErrors));
+                    if (settings.focusError){
+                        // 最初のエラーにフォーカス
+                        methods.focusError.apply(this, [arrErrors[0].name]);
+                    }
                     result = false;
                 }
                 if ($.isFunction(settings.result)){
