@@ -1,6 +1,8 @@
 /**
  * パラメータチェックプラグイン
  * (TwitterBootstrap3.x対応)
+ * v.1.5
+ * https://github.com/tghkuma/jquery.form_validate_btfw
  */
 ;(function($) {
     var pluginName = 'formValidate';
@@ -265,16 +267,29 @@
                     $.each(arrRules, function(i, rule){
                         var arrRuleErrors = [];
                         var errors;
+                        var params;
 
-                        // 独自チェック関数
-                        if ($.isFunction(rule)) {
-                            errors = rule.apply(form, [field, $objVal, [], settings]);
-                            helpers.pushErrors(arrRuleErrors, field, errors);
+                        //------------------
+                        // ルール分岐
+                        //------------------
+                        // ルールがObject
+                        // { rule:'ルール名', params:[<パラメータ配列>]}
+                        if (typeof rule == 'object') {
+                            if (!rule.rule){
+                                return;
+                            }
+                            if (rule.params){
+                                params = rule.params;
+                                if (!$.isArray(params)){
+                                    params = [params];
+                                }
+                            }
+                            rule = rule.rule;
                         }
-                        // バンドルルール
+                        // ルールが文字列(旧仕様)
                         else if (typeof rule == 'string') {
                             // パラメータ解析処理
-                            var params = rule.split(':', 2);
+                            params = rule.split(':', 2);
                             if (params[0]) {
                                 rule = params[0];
                             }
@@ -291,7 +306,14 @@
                             } else {
                                 params = [];
                             }
+                        }
 
+                        // 独自チェック関数
+                        if ($.isFunction(rule)) {
+                            errors = rule.apply(form, [field, $objVal, params, settings]);
+                            helpers.pushErrors(arrRuleErrors, field, errors);
+                        }
+                        else if (typeof rule == 'string') {
                             // 指定フィールドに値が入っているとき
                             if (bValueExists){
                                 if (validateExistsMethods[rule]) {
@@ -411,18 +433,18 @@
         };
 
         /*
-        * パラメータチェック群
-        *
-        * @param field パラメータ名
-        * @param rule チェックコマンド
-        * @param objVal 値オブジェクト
-        *
-        * @return	string|null エラーメッセージ 文字列 or 配列
-        */
+         * パラメータチェック群
+         *
+         * @param field パラメータ名
+         * @param rule チェックコマンド
+         * @param objVal 値オブジェクト
+         *
+         * @return	string|null エラーメッセージ 文字列 or 配列
+         */
         var validateExistsMethods = {
             /*
-            * 確認項目
-            */
+             * 確認項目
+             */
             confirm : function(field, objVal, params, settings){
                 var confirmVal = $(this).find("*[name='"+field.name+settings.confirm_suffix+"']");
                 if(!objVal || !confirmVal || helpers.getValue(objVal) != confirmVal.val())
@@ -430,8 +452,8 @@
                 return null;
             },
             /*
-            * E-Mailチェック
-            */
+             * E-Mailチェック
+             */
             email : function(field, objVal){
                 var val = helpers.getValue(objVal);
                 if (val) {
@@ -443,8 +465,8 @@
                 return null;
             },
             /*
-            * 全角
-            */
+             * 全角
+             */
             zenkaku : function(field, objVal){
                 if (!helpers._isZenkaku(helpers.getValue(objVal))){
                     return '全角で入力してください.';
@@ -452,8 +474,8 @@
                 return null;
             },
             /*
-            * 半角
-            */
+             * 半角
+             */
             hankaku : function(field, objVal){
                 if (!helpers._isHankaku(helpers.getValue(objVal))){
                     return '半角で入力してください.';
@@ -461,8 +483,8 @@
                 return null;
             },
             /*
-            * 全角カタカナ
-            */
+             * 全角カタカナ
+             */
             zen_katakana : function(field, objVal){
                 if (!helpers._isAllkana(helpers.getValue(objVal))){
                     return '全角カタカナで入力してください.';
@@ -470,8 +492,8 @@
                 return null;
             },
             /*
-            * 全角ひらがな
-            */
+             * 全角ひらがな
+             */
             hiragana : function(field, objVal){
                 if (!helpers._isAllHiragana(helpers.getValue(objVal))){
                     return '全角ひらがなで入力してください.';
@@ -479,8 +501,8 @@
                 return null;
             },
             /*
-            * 電話番号
-            */
+             * 電話番号
+             */
             tel : function(field, objVal){
                 if (!helpers._isTel(helpers.getValue(objVal))){
                     return '数字-()で入力してください.';
@@ -488,8 +510,8 @@
                 return null;
             },
             /*
-            * 最小文字数
-            */
+             * 最小文字数
+             */
             minlength : function(field, objVal, params){
                 var min= Number(params[0]);
                 if (helpers.getValue(objVal).length<min)
@@ -497,8 +519,8 @@
                 return null;
             },
             /*
-            * 最大文字数
-            */
+             * 最大文字数
+             */
             maxlength : function(field, objVal, params){
                 var max= Number(params[0]);
                 if (max<helpers.getValue(objVal).length)
@@ -506,8 +528,8 @@
                 return null;
             },
             /*
-            * 数値チェック
-            */
+             * 数値チェック
+             */
             number : function(field, objVal, params, settings){
                 var val = helpers.getValue(objVal);
                 if(!$.isNumeric(val) || (val.indexOf(' ') != -1)){
@@ -516,8 +538,8 @@
                 return null;
             },
             /*
-            * 数値桁数チェック
-            */
+             * 数値桁数チェック
+             */
             numlength : function(field, objVal, params){
                 var val = helpers.getValue(objVal);
                 var reg_tmp = params[0];
@@ -533,8 +555,8 @@
                 return null;
             },
             /*
-            * 最小値
-            */
+             * 最小値
+             */
             min : function(field, objVal, params){
                 var val = helpers.getValue(objVal);
                 if(!helpers._isInteger(val)) {
@@ -546,8 +568,8 @@
                 return null;
             },
             /*
-            * 最大値
-            */
+             * 最大値
+             */
             max : function(field, objVal, params){
                 var val = helpers.getValue(objVal);
                 if(!helpers._isInteger(val)) {
@@ -559,8 +581,8 @@
                 return null;
             },
             /*
-            * 数値範囲
-            */
+             * 数値範囲
+             */
             range : function(field, objVal, params){
                 var val = helpers.getValue(objVal);
                 if(!helpers._isInteger(val)) {
@@ -573,8 +595,8 @@
                 return null;
             },
             /*
-            * 日付
-            */
+             * 日付
+             */
             date : function(field, objVal){
                 var val = helpers.getValue(objVal);
                 var reg = new RegExp("^((\\d{1,4})[/-](\\d{1,2})[/-](\\d{1,2}))$", "g");
@@ -591,9 +613,9 @@
                 return null;
             },
             /*
-            * 日時チェック
-            * [YYYY-MM-DD hh:mm:ss]または[YYYY/MM/DD]の書式でチェックする
-            */
+             * 日時チェック
+             * [YYYY-MM-DD hh:mm:ss]または[YYYY/MM/DD]の書式でチェックする
+             */
             datetime : function(field, objVal){
                 var val = helpers.getValue(objVal);
                 var reg = new RegExp("^((\\d{1,4})[/-](\\d{1,2})[/-](\\d{1,2}))( ((\\d{1,2}):(\\d{1,2})(:(\\d{1,2}))?))?$", "g");
@@ -613,9 +635,9 @@
                 return null;
             },
             /*
-            * 日付チェック
-            * [YYYY/MM/DD] or [YYYY/MM] or [YYYY]の書式でチェックする
-            */
+             * 日付チェック
+             * [YYYY/MM/DD] or [YYYY/MM] or [YYYY]の書式でチェックする
+             */
             date_ex : function(field, objVal){
                 var val = helpers.getValue(objVal);
                 var reg = new RegExp('^(\\d{1,4})([/-](\\d{1,2})([/-](\\d{1,2}))?)?$');
@@ -635,9 +657,9 @@
                 return null;
             },
             /*
-            * 時間チェック
-            * [hh:mm:ss]の書式でチェックする
-            */
+             * 時間チェック
+             * [hh:mm:ss]の書式でチェックする
+             */
             time : function(field, objVal, params){
                 var val = helpers.getValue(objVal);
                 var reg;
@@ -691,24 +713,35 @@
             },
 
             /*
-             * 正規表現チェック
+             * 正規表現チェック(test版)
              * @param string field フィールド名
              * @param object objVal 値
              * @param string|array params 正規表現パラメータ
-             *        params[0]:正規表現
+             *        params[0]:正規表現(文字列 or 正規表現クラス)
              *        params[1]:正規表現フラグ(オプション)
-             *        params[2]:エラーメッセージ(オプション)
+             *        params[1 or 2]:エラーメッセージ(オプション)
              */
             regexp : function(field, objVal, params){
                 var val = helpers.getValue(objVal);
-                if (typeof params == 'string') {
+                if(!$.isArray(params)){
                     params = [params];
                 }
-                var strRegPattern = params[0];
-                var strRegFlag = (params[1]?params[1]:undefined);
-                var reg = new RegExp(strRegPattern, strRegFlag);
-                if (!reg.test(val))
-                    return (params[2] ? params[2]:'書式が間違っています.');
+                var reg, err_message;
+                try{
+                    if (typeof params[0] == 'string'){
+                        reg = new RegExp(params[0], params[1]?params[1]:undefined);
+                        err_message = params[2];
+                    }
+                    else{
+                        reg = params[0];
+                        err_message = params[1];
+                    }
+                    if (!reg.test(val))
+                        return (err_message ? err_message:'書式が間違っています.');
+                }
+                catch(e){
+                    return '正規表現が間違っています.';
+                }
                 return null;
             }
         };
@@ -777,61 +810,61 @@
                 return arrErrors;
             },
             /**
-            * 半角英数字チェック
-            *
-            * @param    _text	文字列
-            *
-            * @return	boolean true:OK, false:NG
-            */
+             * 半角英数字チェック
+             *
+             * @param    _text	文字列
+             *
+             * @return	boolean true:OK, false:NG
+             */
             _isHankaku : function(_text) {
                 // 半角以外が存在する場合
                 return !(/[^\x20-\x7E]/).test(_text);
             },
 
             /**
-            * 全角チェック
-            *
-            * @param    _text	文字列
-            *
-            * @return	boolean true:OK, false:NG
-            */
+             * 全角チェック
+             *
+             * @param    _text	文字列
+             *
+             * @return	boolean true:OK, false:NG
+             */
             _isZenkaku : function(_text) {
                 return !(/[\w\-\.]/).test(_text);
             },
 
             /**
-            * 電話番号チェック
-            *
-            * @param	inpText	文字列
-            *
-            * @return	boolean true:OK, false:NG
-            */
+             * 電話番号チェック
+             *
+             * @param	inpText	文字列
+             *
+             * @return	boolean true:OK, false:NG
+             */
             _isTel : function(inpText) {
                 // 「0～9」「-」「(」「)」以外があったらエラー
                 return !(/[^0-9\-\(\)]/).test(inpText);
             },
 
             /**
-            *	整数チェック
-            *
-            * @param	_value	値
-            *
-            * @return	boolean true:OK, false:NG
-            */
+             *	整数チェック
+             *
+             * @param	_value	値
+             *
+             * @return	boolean true:OK, false:NG
+             */
             _isInteger : function(_value){
                 var test = /^(-\d+|\d*)$/.test(''+_value);
                 return test & !isNaN(_value);
             },
 
             /**
-            *	年月日整合性チェック
-            *
-            * @param	_year	年
-            * @param	_month	月
-            * @param	_day	日
-            *
-            * @return	boolean true:OK, false:NG
-            */
+             *	年月日整合性チェック
+             *
+             * @param	_year	年
+             * @param	_month	月
+             * @param	_day	日
+             *
+             * @return	boolean true:OK, false:NG
+             */
             _isDate : function(_year, _month, _day) {
                 //==========================
                 // 年範囲チェック
@@ -862,14 +895,14 @@
             },
 
             /**
-            *	時分整合性チェック
-            *
-            * @param	_hour	時
-            * @param	_minute	分
-            * @param	_second	秒(null=未チェック)
-            *
-            * @return	boolean true:OK, false:NG
-            */
+             *	時分整合性チェック
+             *
+             * @param	_hour	時
+             * @param	_minute	分
+             * @param	_second	秒(null=未チェック)
+             *
+             * @return	boolean true:OK, false:NG
+             */
             _isTime : function(_hour, _minute, _second){
                 //====================
                 //	時範囲チェック
@@ -890,12 +923,12 @@
             },
 
             /**
-            *	全角カタカナチェック
-            *
-            * @param	_inpText	文字列
-            *
-            * @return	boolean true:OK, false:NG
-            */
+             *	全角カタカナチェック
+             *
+             * @param	_inpText	文字列
+             *
+             * @return	boolean true:OK, false:NG
+             */
             _isAllkana : function(_inpText){
                 for(var i=0; i<_inpText.length; i++){
                     //if(_inpText.charAt(i) < 'ア' || _inpText.charAt(i) > 'ン'){
@@ -909,12 +942,12 @@
             },
 
             /**
-            *	全角ひらがなチェック
-            *
-            * @param	_inpText	文字列
-            *
-            * @return	boolean true:OK, false:NG
-            */
+             *	全角ひらがなチェック
+             *
+             * @param	_inpText	文字列
+             *
+             * @return	boolean true:OK, false:NG
+             */
             _isAllHiragana : function(_inpText){
                 for(var i=0; i<_inpText.length; i++){
                     if(_inpText.charAt(i) < 'ぁ' || _inpText.charAt(i) > 'ん'){
@@ -927,23 +960,23 @@
             },
 
             /**
-            *	EMailチェック
-            *
-            * @param	_strEmail	EMAIL
-            *
-            * @return	string
-            *           "":エラー無し
-            *			""以外:エラー
-            */
+             *	EMailチェック
+             *
+             * @param	_strEmail	EMAIL
+             *
+             * @return	string
+             *           "":エラー無し
+             *			""以外:エラー
+             */
             _isEmailEx : function(_strEmail) {
                 var emailPat=/^(.+)@(.+)$/;
                 var specialChars="\\(\\)<>@,;:\\\\\\\"\\.\\[\\]";
                 var validChars="[^\\s" + specialChars + "]";
-            //	var quotedUser="(\"[^\"]*\")";
+                //	var quotedUser="(\"[^\"]*\")";
                 var ipDomainPat=/^\[(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})\]$/;
                 var atom=validChars + '+';
-            //	var word="(" + atom + "|" + quotedUser + ")";
-            //	var userPat=new RegExp("^" + word + "(\\." + word + ")*$");
+                //	var word="(" + atom + "|" + quotedUser + ")";
+                //	var userPat=new RegExp("^" + word + "(\\." + word + ")*$");
 
                 var domainPat=new RegExp("^" + atom + "(\\." + atom +")*$");
 
@@ -956,16 +989,16 @@
                 }
 
                 // ユーザーとドメインとして格納
-            //	var user=matchArray[1];
+                //	var user=matchArray[1];
                 var domain=matchArray[2];
 
-            // KUMA:携帯用パッチ
-            /*
-                // ユーザー部が無い
-                if (user.match(userPat)==null) {
-                    return("正しくありません(USER)."+userPat);
-                }
-            */
+                // KUMA:携帯用パッチ
+                /*
+                 // ユーザー部が無い
+                 if (user.match(userPat)==null) {
+                 return("正しくありません(USER)."+userPat);
+                 }
+                 */
                 // ドメイン名のIPパターンチェック
                 var IPArray=domain.match(ipDomainPat);
                 if ( IPArray != null ) {

@@ -6,9 +6,9 @@
   <meta http-equiv="Content-Script-Type" content="text/javascript" />
   <meta http-equiv="Content-Style-Type" content="text/css" />
   <title>ユーザー編集</title>
-  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
-  <script type="text/javascript" charset="UTF-8" src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
-  <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+  <script type="text/javascript" charset="UTF-8" src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
   <script type="text/javascript" charset="UTF-8" src="../js/jquery.form_validate_btfw.js"></script>
   <script type='text/javascript'>
     $(function() {
@@ -16,7 +16,7 @@
       $(form).formValidate({ fields:[
         { name:'ACCOUNT', d_name:'アカウント', rules:['required', 'hankaku']},
         { name:'PASSWORD', d_name:'パスワード', rules:['required', 'hankaku', 'confirm']},
-        { name:'NAME', d_name:'名前', rules:['required']},
+        { name:'NAME', d_name:'名前', rules:['required', 'zenkaku']},
         { name:'EMAIL', d_name:'EMAIL', rules:['email']},
         { name:'COMMENT', d_name:'コメント', rules:['maxlength:16']}
       ]});
