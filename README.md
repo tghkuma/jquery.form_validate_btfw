@@ -1,18 +1,18 @@
 # JQuery Form Validate(Bootstrap3/TwitterBootstrap2.x)
 
 ## 解説
-このプログラムは、Bootstrap3形式のフォーム値のValidateを行います。
+このプログラムは、Bootstrap3形式のフォーム値のValidateを行う。
 
 ## 書式
 
 Validate定義
-Submit時にValidateを行います。
+Submit時にValidateを行う場合。
 
 ````javascript
 $("フォーム").formValidate({ <オプション>,fields:[
  { name:'<フィールド名1>'[, d_name:'<フィールド表示名1>'][, rules:<ルール or ルール配列>]},
                     :
- { name:'<フィールド名n>', d_name:'<フィールド表示名n>', rules:<ルール or ルール配列>},
+ { name:'<フィールド名n>', d_name:'<フィールド表示名n>', rules:<ルール or ルール配列>}
 ]});
 ````
 
@@ -58,45 +58,44 @@ $("フォーム").formValidate('メソッド名'[,<パラメータ1>[...,<パラ
 メソッド名 |パラメータ| 機能
 --- | --- | ---
 init |オプションオブジェクト| 初期化
-dispError|オプションオブジェクト| エラー表示処理
+dispError|エラーメッセージ配列| エラー表示処理
 focusError|name| nameフィールドにフォーカス
 clearError|name| nameフィールドのエラークリア.未指定時全てクリア
 setError|name, message| nameフィールドにmessageエラーを表示
-validate|オプションオブジェクト| パラメータチェック<br>戻り値:true=正常, false=エラー
-validate_alert|オプションオブジェクト| パラメータチェック<br>エラー時alert()でエラー表示
-getValidateResult|オプションオブジェクト|パラメータチェック結果取得<br>戻り値:エラーメッセージ配列
+validate|[オプションオブジェクト]| パラメータチェック<br>戻り値:true=正常, false=エラー
+validate_alert|[オプションオブジェクト]| パラメータチェック<br>エラー時alert()でエラー表示
+getValidateResult|[オプションオブジェクト]|パラメータチェック結果取得<br>戻り値:エラーメッセージ配列
 
 ### ルール
 
-ルール名 | 機能
----|---
-zip_ex | 郵便番号.  nameとname+"\_AFTER"の2か所をチェック
-ymd | 年月日.  name+"\_Y", name+"\_M", name+"\_D"の３か所をチェック
-email | E-Mail
-tel | 電話番号
-zenkaku | 全角
-hankaku | 半角
-zen_katakana | 全角カタカナ
-hiragana | 全角ひらがな
-minlength:<数値> | 最小文字数
-maxlength:<数値> | 最大文字数
-numlength:<数値>[,<数値>] | 最大文字数[最小～最大文字数]
-numlength:<数値> | 数値桁数指定
-number | 数値
-min:<数値> | 最小値
-max:<数値> | 最大値
-checkbox:<最少選択数>[,<最大選択数>]| チェックボックスの選択チェック
-radio| ラジオ必須チェック
-range:<最小値>,<最大値> | 数値範囲
-range:[<最小値>,<最大値>] | 数値範囲
-date | 日付
-datetime | 日時
-time | 時間
-zip | 郵便番号
-date_ex | 日付.<br>[YYYY/MM/DD] or [YYYY/MM] or [YYYY]の書式でチェックする
-regexp:<正規表現>[,<フラグ>[,<エラーメッセージ>]] | 正規表現.<br><フラグ>,<エラーメッセージ>は省略可
+ルール名 | パラメータ | 機能
+---|---|---
+zip_ex | _なし_ |郵便番号.<br>nameとname+"\_AFTER"の2か所をチェック
+ymd | | 年月日.<br>name+"\_Y", name+"\_M", name+"\_D"の３か所をチェック
+email | | E-Mail
+tel | |電話番号
+zenkaku | |全角
+hankaku | |半角
+zen_katakana | |全角カタカナ
+hiragana | |全角ひらがな
+minlength|<数値>|最小文字数
+maxlength|<数値>|最大文字数
+numlength|<数値>[,<数値>]|最小文字数[最小～最大文字数]
+number | | 数値
+min|<数値>|最小値
+max|<数値>|最大値
+checkbox|<最少選択数>[,<最大選択数>]| チェックボックスの選択チェック
+radio| |ラジオ必須チェック
+range|<最小値>,<最大値>|数値範囲
+date | |日付
+datetime | |日時
+time | |時間
+zip | |郵便番号
+date_ex | |日付.<br>[YYYY/MM/DD] or [YYYY/MM] or [YYYY]の書式でチェックする
+regexp|<正規表現>[,<フラグ>[,<エラーメッセージ>]]| 正規表現.<br><フラグ>,<エラーメッセージ>は省略可
+<関数>||独自Validate関数を実行する
 
-### ルールの追加パラメータ書式
+### パラメータ書式
 
 ルールにパラメータが必要な物は下記で定義する。
 
@@ -104,10 +103,36 @@ regexp:<正規表現>[,<フラグ>[,<エラーメッセージ>]] | 正規表現.
 <ルール名>:<パラメータ1>[,<パラメータ2>[...,<パラメータn>]
 ````
 
-但し、正規表現の様にパラメータ中に「,」が必要な場合は、配列のJSON形式で表記も可能
+但し、正規表現の様にパラメータ中に「,」が必要な場合は、ぱらーメータをJSON形式に変換して定義する。
 
 ````
 'regexp:'+JSON.stringify(["^[a-z\\d,-_]+?$",'gi',"入力可能文字は英数字,-_です"])
+````
+
+### 独自Validate関数
+
+下記書式で実装する
+
+````javascript
+/*
+* サンプル関数
+* @param string field フィールド名
+* @param object objVal 値
+* @param array params パラメータ配列(オプション)
+*
+* @return null|string Validate結果
+*         null:正常
+*         string:エラー
+*/
+function funcValidate(field, objVal, params){
+    var val = objVal.val();
+
+    if (val=='abcde')
+        return '「abcde」は使用できません.');
+    else if(params[0] && val==params[0])
+        return '「'+params[0]+'」は使用できません.');
+    return null;
+}
 ````
 
 ## エラーメッセージ配列
@@ -118,7 +143,7 @@ getValidateResultメソッドの戻り値はエラーメッセージは下記構
 [
  { name:'<フィールド名1>', d_name:'<フィールド表示名1>', message:'<エラーメッセージ>'},
                     :
- { name:'<フィールド名n>', d_name:'<フィールド表示名n>', message:'<エラーメッセージ>'},
+ { name:'<フィールド名n>', d_name:'<フィールド表示名n>', message:'<エラーメッセージ>'}
 ];
 ````
 1フィールドに複数ルールが定義されている等、複数のエラーが出た場合は同じフィールド名で複数のエラーメッセージを返す。
@@ -130,7 +155,6 @@ getValidateResultメソッドの戻り値はエラーメッセージは下記構
                     :
 ];
 ````
-
 
 ## ライセンス
 
