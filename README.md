@@ -30,8 +30,8 @@ $("フォーム").formValidate('validate');
 --- | --- | ---
 result| null|結果を指定functionに渡す
 submit |"validate" | Submit時に行う処理、メソッド文字列 or 関数 or null(何もしない)
-confirm_suffix|"\_CONFIRM" | confirmルールの確認フィールドの接尾語
-zip_suffix | "\_AFTER" |zip_exルールの4桁フィールドの接尾語
+confirm_suffix|"\_confirm" | confirmルールの確認フィールドの接尾語
+zip_suffix | "\_after" |zip_exルールの4桁フィールドの接尾語
 fields | null |各種フィールド定義配列
 errorType| null | "tb2"=TwitterBootstrap2形式でエラーを表示
 clearError | null | エラークリア関数を指定
@@ -70,7 +70,7 @@ getValidateResult|[オプションオブジェクト]|パラメータチェッ�
 
 ルール名 | パラメータ | 機能
 ---|---|---
-zip_ex | _なし_ |郵便番号.<br>nameとname+"\_AFTER"の2か所をチェック
+zip_ex | _なし_ |郵便番号.<br>nameとname+"\_after"の2か所をチェック
 ymd | _なし_ | 年月日.<br>name+"\_Y", name+"\_M", name+"\_D"の３か所をチェック
 email | _なし_ | E-Mail
 tel | _なし_ |電話番号
@@ -103,7 +103,7 @@ regexp|<正規表現>[,<フラグ>[,<エラーメッセージ>]]| 正規表現.<
 <ルール名>:<パラメータ1>[,<パラメータ2>[...,<パラメータn>]
 ````
 
-但し、正規表現の様にパラメータ中に「,」が必要な場合は、ぱらーメータをJSON形式に変換して定義する。
+但し、正規表現の様にパラメータ中に「,」が必要な場合は、パラメータをJSON形式に変換して定義する。
 
 ````
 'regexp:'+JSON.stringify(["^[a-z\\d,-_]+?$",'gi',"入力可能文字は英数字,-_です"])

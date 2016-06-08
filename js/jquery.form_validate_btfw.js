@@ -1,7 +1,7 @@
 /**
  * パラメータチェックプラグイン
  * (TwitterBootstrap3.x対応)
- * v.1.0
+ * v.1.5.1
  * https://github.com/tghkuma/jquery.form_validate_btfw
  */
 ;(function($) {
@@ -11,8 +11,8 @@
         var defaults = {
             result: null,
             submit: 'validate',
-            confirm_suffix: '_CONFIRM',
-            zip_suffix: '_AFTER',
+            confirm_suffix: '_confirm',
+            zip_suffix: '_after',
             fields: null,
             errorType:null,
             clearError:null,
@@ -20,7 +20,7 @@
             focusError: true,
             focusErrorSpeed: 'fast',
             // メッセージ定義
-            'MESSAGE':{
+            MESSAGE:{
                 'VALIDATE_ERROR':'入力に誤りがあります.',
                 // Required
                 'REQUIRED':'必須項目です.',
@@ -267,16 +267,43 @@
                     $.each(arrRules, function(i, rule){
                         var arrRuleErrors = [];
                         var errors;
+                        var params;
 
-                        // 独自チェック関数
-                        if ($.isFunction(rule)) {
-                            errors = rule.apply(form, [field, $objVal, [], settings]);
-                            helpers.pushErrors(arrRuleErrors, field, errors);
+                        //------------------
+                        // ルール分岐
+                        //------------------
+                        // ルールが配列
+                        // [ 'ルール名', [<パラメータ配列>]]
+                        if ($.isArray(rule)) {
+                            if (!rule[0]){
+                                return;
+                            }
+                            if (rule[1]){
+                                params = rule[1];
+                                if (!$.isArray(params)){
+                                    params = [params];
+                                }
+                            }
+                            rule = rule[0];
                         }
-                        // バンドルルール
+                        // ルールがObject
+                        // { rule:'ルール名', params:[<パラメータ配列>]}
+                        else if (typeof rule == 'object') {
+                            if (!rule.rule){
+                                return;
+                            }
+                            if (rule.params){
+                                params = rule.params;
+                                if (!$.isArray(params)){
+                                    params = [params];
+                                }
+                            }
+                            rule = rule.rule;
+                        }
+                        // ルールが文字列(旧仕様)
                         else if (typeof rule == 'string') {
                             // パラメータ解析処理
-                            var params = rule.split(':', 2);
+                            params = rule.split(':', 2);
                             if (params[0]) {
                                 rule = params[0];
                             }
@@ -293,7 +320,14 @@
                             } else {
                                 params = [];
                             }
+                        }
 
+                        // 独自チェック関数
+                        if ($.isFunction(rule)) {
+                            errors = rule.apply(form, [field, $objVal, params, settings]);
+                            helpers.pushErrors(arrRuleErrors, field, errors);
+                        }
+                        else if (typeof rule == 'string') {
                             // 指定フィールドに値が入っているとき
                             if (bValueExists){
                                 if (validateExistsMethods[rule]) {
@@ -697,20 +731,31 @@
              * @param string field フィールド名
              * @param object objVal 値
              * @param string|array params 正規表現パラメータ
-             *        params[0]:正規表現
+             *        params[0]:正規表現(文字列 or 正規表現クラス)
              *        params[1]:正規表現フラグ(オプション)
-             *        params[2]:エラーメッセージ(オプション)
+             *        params[1 or 2]:エラーメッセージ(オプション)
              */
             regexp : function(field, objVal, params){
                 var val = helpers.getValue(objVal);
-                if (typeof params == 'string') {
+                if(!$.isArray(params)){
                     params = [params];
                 }
-                var strRegPattern = params[0];
-                var strRegFlag = (params[1]?params[1]:undefined);
-                var reg = new RegExp(strRegPattern, strRegFlag);
-                if (!reg.test(val))
-                    return (params[2] ? params[2]:'書式が間違っています.');
+                var reg, err_message;
+                try{
+                    if (typeof params[0] == 'string'){
+                        reg = new RegExp(params[0], params[1]?params[1]:undefined);
+                        err_message = params[2];
+                    }
+                    else{
+                        reg = params[0];
+                        err_message = params[1];
+                    }
+                    if (!reg.test(val))
+                        return (err_message ? err_message:'書式が間違っています.');
+                }
+                catch(e){
+                    return '正規表現が間違っています.';
+                }
                 return null;
             }
         };
