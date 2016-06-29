@@ -1,7 +1,7 @@
 /**
  * パラメータチェックプラグイン
  * (TwitterBootstrap3.x対応)
- * v.1.5.1
+ * v.1.5.2
  * https://github.com/tghkuma/jquery.form_validate_btfw
  */
 ;(function($) {
@@ -21,11 +21,11 @@
             focusErrorSpeed: 'fast',
             // メッセージ定義
             MESSAGE:{
-                'VALIDATE_ERROR':'入力に誤りがあります.',
+                VALIDATE_ERROR:'入力に誤りがあります.',
                 // Required
-                'REQUIRED':'必須項目です.',
+                REQUIRED:'必須項目です.',
                 // input a numerical value
-                'NUMERICAL_VALUE':'数字を入力して下さい.'
+                NUMERICAL_VALUE:'数字を入力して下さい.'
             }
         };
 
