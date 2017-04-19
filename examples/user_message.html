@@ -10,6 +10,12 @@
   <script src="../js/jquery.btfw.form_validate.js"></script>
   <script type='text/javascript'>
     $(function() {
+        // ユーザー定義メッセージ
+        $.extend($.fn.formValidate.defaults.messages, {
+            REQUIRED:'ここは必須です',
+            VALIDATE_ERROR:'何かおかしいです'
+        });
+
       $("form[name=form]").formValidate({ fields:[
         { name:'account', d_name:'アカウント', rules:['required', 'minlength:2', 'hankaku',
                 { rule:'regexp', params:[/^[A-Z\d_-]*$/i, '英数字_-のみ使用出来ます']}]},
@@ -31,7 +37,7 @@
 <body>
 <div class="container">
   <div class="content">
-    <h1>サンプル</h1>
+    <h1>サンプル(エラーメッセージ書き換え)</h1>
     <form name="form" action="#" method="post" class="form-horizontal">
       <fieldset>
         <div class="form-group">

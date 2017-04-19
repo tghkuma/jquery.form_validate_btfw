@@ -5,77 +5,14 @@
  * https://github.com/tghkuma/jquery.form_validate_btfw
  */
 ;( function( $, window, document, undefined ) {
-    "use strict";
+    'use strict';
 
-    var pluginName = 'formValidate',
-    defaults = {
-        result: null,
-        submit: 'validate',
-        confirm_suffix: '_confirm',
-        zip_suffix: '_after',
-        ymd_suffix_y: '_y',
-        ymd_suffix_m: '_m',
-        ymd_suffix_d: '_d',
-        fields: null,
-        errorType:null,
-        clearError:null,
-        setError:null,
-        focusError: true,
-        focusErrorSpeed: 'fast'
-    },
-    // メッセージ定義
-    messages = {
-        VALIDATE_ERROR:'入力に誤りがあります.',
-        // Required
-        REQUIRED:'必須項目です.',
-        REQUIRED_PART:'{0} は必須項目です.',
-        INSUFFICIENT:'不足しています.',
-        INSUFFICIENT_PART:'{0} が不足しています.',
-        CONFIRM:'確認{0}と異なっています.',
-        CONFIRM_FIELD:'項目',
-        // input a numerical value
-        NUMERICAL_VALUE:'数字を入力して下さい.',
-        INTEGER:'整数値を入力して下さい.',
-        INTEGER_PART:'{0} は整数値を入力して下さい.',
-        MIN:'{0} ～ の数字を入力してください.',
-        MAX:'～ {0} の数字を入力してください.',
-        RANGE:'{0} ～ {1} の数字を入力してください.',
-        MIN_LENGTH:'{0}文字以上で入力して下さい.',
-        MAX_LENGTH:'{0}文字以下で入力して下さい.',
-        NUM_LENGTH:'{0}桁の数字を入力してください.',
-        CHECKBOX_MIN:'{0} 個チェックしてください.',
-        CHECKBOX_RANGE:'{0}～{1} 個の間でチェックしてください.',
-        ZENKAKU:'全角で入力してください.',
-        HANKAKU:'半角で入力してください.',
-        ZEN_KANA:'全角カタカナで入力してください.',
-        TEL:'数字-()で入力してください.',
-        ZIP:'[nnn-nnnn]書式で記述してください.',
-        // 日付系
-        DATE:'[YYYY/MM/DD]書式で記述してください.',
-        DATE_EX:'[YYYY/MM/DD] or [YYYY/MM] or [YYYY]書式で記述してください.',
-        DATETIME:'[YYYY/MM/DD hh:mm:ss]書式で記述してください.',
-        TIME:'[hh:mm:ss]書式で記述してください.',
-        TIME_HM:'[hh:mm:ss]書式で記述してください.',
-        DATE_INVALID:'日付が間違っています.',
-        TIME_INVALID:'時間が間違っています.',
-        DATE_PART_Y:'(年)',
-        DATE_PART_M:'(月)',
-        DATE_PART_D:'(日)',
-        // 正規表現系
-        REGEXP_INVALID_PARAM:'正規表現が間違っています.',
-        REGEXP_INVALID_VALUE:'書式が間違っています.',
-        // メール系
-        MAIL_NO_AT:'正しくありません(@).',
-        MAIL_INVALID_IP:'正しくありません(IP).',
-        MAIL_NO_DOMAIN:'ドメイン名がありません(DOMAIN).',
-        MAIL_INVALID_LOCALE:'正しくありません(LOCALE).',
-        MAIL_INVALID_DMAIN:'ドメイン名の書式が誤っています.'
-    };
-
+    var pluginName = 'formValidate';
     $.fn[pluginName] = function(method) {
-        var methods = {
+        var settings,
+        methods = {
             init:function (options) {
-                var settings = $.extend({}, defaults, options);
+                settings = $.extend({}, $.fn[pluginName].defaults, options);
                 return this.each(function () {
                     var $element = $(this);
                     $element.data(pluginName+".settings", settings);
@@ -109,7 +46,7 @@
              * @param arrErrors
              */
             dispError:function (arrErrors) {
-                var settings = $(this).data(pluginName+".settings");
+                settings = $(this).data(pluginName+".settings");
                 var self = this;
                 $.each(arrErrors, function(i, eroor){
                     methods.setError.apply(self, [eroor.name, eroor.message]);
@@ -125,7 +62,7 @@
              * @param name
              */
             focusError:function (name) {
-                var settings = $(this).data(pluginName+".settings");
+                settings = $(this).data(pluginName+".settings");
                 var field = $(this).find("*[name='" + name + "']");
                 $(field).focus();
                 var p = $(field).offset().top - $(window).innerHeight()/2;
@@ -140,7 +77,7 @@
              * @param name 未指定時全て
              */
             clearError:function (name) {
-                var settings = $(this).data(pluginName+".settings");
+                settings = $(this).data(pluginName+".settings");
                 if ($.isFunction(settings.clearError)){
                     settings.clearError.apply(this, [name]);
                 }
@@ -159,7 +96,7 @@
              * @param message
              */
             setError:function (name, message) {
-                var settings = $(this).data(pluginName+".settings");
+                settings = $(this).data(pluginName+".settings");
                 if ($.isFunction(settings.setError)){
                     settings.setError.apply(this, [name, message]);
                 }
@@ -255,7 +192,7 @@
              * パラメータチェック
              */
             validate:function (options) {
-                var settings = $.extend($(this).data(pluginName+".settings"), options);
+                settings = $.extend($(this).data(pluginName+".settings"), options);
 
                 methods.clearError.apply(this);
                 var result = true;
@@ -275,7 +212,7 @@
              * (エラー時アラート)
              */
             validate_alert:function (options) {
-                var settings = $.extend($(this).data(pluginName+".settings"), options);
+                settings = $.extend($(this).data(pluginName+".settings"), options);
 
                 var result = true;
                 var arrErrors = methods.getValidateResult.apply(this, [settings]);
@@ -298,7 +235,7 @@
              */
             getValidateResult:function (options) {
                 var form = this;
-                var settings = $.extend($(this).data(pluginName+".settings"), options);
+                settings = $.extend($(this).data(pluginName+".settings"), options);
 
                 var arrErrors = [];
                 var fields = settings.fields;
@@ -401,7 +338,7 @@
                             else {
                                 // 必須項目チェック
                                 if (rule === 'required'){
-                                    helpers.pushErrors(arrRuleErrors, field, messages.REQUIRED);
+                                    helpers.pushErrors(arrRuleErrors, field, settings.messages.REQUIRED);
                                 }
                                 else if (validateMethods[rule]) {
                                     errors = validateMethods[rule].apply(form, [field, $objVal, params, settings]);
@@ -432,7 +369,7 @@
             zip_ex:function (field, objVal, params, settings) {
                 var zip_after = $(this).find("*[name='" + field.name + settings.zip_suffix + "']");
                 if (objVal && helpers.getValue(objVal) && (!zip_after || !zip_after.val()))
-                    return messages.INSUFFICIENT;
+                    return settings.messages.INSUFFICIENT;
                 return null;
             },
 
@@ -466,39 +403,39 @@
                 // 日付必須チェック
                 if (params[0] === 'required'){
                     if(!b_year)
-                        arrErrors.push(helpers.format(messages.REQUIRED_PART, messages.DATE_PART_Y));
+                        arrErrors.push(helpers.format(settings.messages.REQUIRED_PART, settings.messages.DATE_PART_Y));
                     if(!b_month)
-                        arrErrors.push(helpers.format(messages.REQUIRED_PART, messages.DATE_PART_M));
+                        arrErrors.push(helpers.format(settings.messages.REQUIRED_PART, settings.messages.DATE_PART_M));
                     if(!b_day)
-                        arrErrors.push(helpers.format(messages.REQUIRED_PART, messages.DATE_PART_D));
+                        arrErrors.push(helpers.format(settings.messages.REQUIRED_PART, settings.messages.DATE_PART_D));
                 }
                 else{
                     // 日付の年月日が一部のみ入力されているとき
                     if ((b_year || b_month || b_day) && !(b_year && b_month && b_day) ){
                         if(!b_year)
-                            arrErrors.push(helpers.format(messages.INSUFFICIENT_PART, messages.DATE_PART_Y));
+                            arrErrors.push(helpers.format(settings.messages.INSUFFICIENT_PART, settings.messages.DATE_PART_Y));
                         if(!b_month)
-                            arrErrors.push(helpers.format(messages.INSUFFICIENT_PART, messages.DATE_PART_M));
+                            arrErrors.push(helpers.format(settings.messages.INSUFFICIENT_PART, settings.messages.DATE_PART_M));
                         if(!b_day)
-                            arrErrors.push(helpers.format(messages.INSUFFICIENT_PART, messages.DATE_PART_D));
+                            arrErrors.push(helpers.format(settings.messages.INSUFFICIENT_PART, settings.messages.DATE_PART_D));
                     }
                 }
                 // 年数値チェック
                 if(!helpers._isInteger(year)) {
-                    arrErrors.push(helpers.format(messages.INTEGER_PART, messages.DATE_PART_Y));
+                    arrErrors.push(helpers.format(settings.messages.INTEGER_PART, settings.messages.DATE_PART_Y));
                 }
                 // 月数値チェック
                 if(!helpers._isInteger(month)) {
-                    arrErrors.push(helpers.format(messages.INTEGER_PART, messages.DATE_PART_M));
+                    arrErrors.push(helpers.format(settings.messages.INTEGER_PART, settings.messages.DATE_PART_M));
                 }
                 // 日数値チェック
                 if(!helpers._isInteger(day)) {
-                    arrErrors.push(helpers.format(messages.INTEGER_PART, messages.DATE_PART_D));
+                    arrErrors.push(helpers.format(settings.messages.INTEGER_PART, settings.messages.DATE_PART_D));
                 }
 
                 // 年月日チェック
                 if (arrErrors.length === 0 && !helpers._isDate(year, month, day)) {
-                    arrErrors.push(helpers.format(messages.DATE_INVALID));
+                    arrErrors.push(helpers.format(settings.messages.DATE_INVALID));
                 }
 
                 return arrErrors;
@@ -521,7 +458,7 @@
             confirm : function(field, objVal, params, settings){
                 var confirmVal = $(this).find("*[name='"+field.name+settings.confirm_suffix+"']");
                 if(!objVal || !confirmVal || helpers.getValue(objVal) !== confirmVal.val())
-                    return helpers.format(messages.CONFIRM, (field.d_name ? field.d_name:messages.CONFIRM_FIELD));
+                    return helpers.format(settings.messages.CONFIRM, (field.d_name ? field.d_name:settings.messages.CONFIRM_FIELD));
                 return null;
             },
             /*
@@ -542,7 +479,7 @@
             */
             zenkaku : function(field, objVal){
                 if (!helpers._isZenkaku(helpers.getValue(objVal))){
-                    return messages.ZENKAKU;
+                    return settings.messages.ZENKAKU;
                 }
                 return null;
             },
@@ -551,7 +488,7 @@
             */
             hankaku : function(field, objVal){
                 if (!helpers._isHankaku(helpers.getValue(objVal))){
-                    return messages.HANKAKU;
+                    return settings.messages.HANKAKU;
                 }
                 return null;
             },
@@ -560,7 +497,7 @@
             */
             zen_katakana : function(field, objVal){
                 if (!helpers._isAllkana(helpers.getValue(objVal))){
-                    return messages.ZEN_KANA;
+                    return settings.messages.ZEN_KANA;
                 }
                 return null;
             },
@@ -569,7 +506,7 @@
             */
             hiragana : function(field, objVal){
                 if (!helpers._isAllHiragana(helpers.getValue(objVal))){
-                    return messages.HIRAGANA;
+                    return settings.messages.HIRAGANA;
                 }
                 return null;
             },
@@ -578,7 +515,7 @@
             */
             tel : function(field, objVal){
                 if (!helpers._isTel(helpers.getValue(objVal))){
-                    return messages.TEL;
+                    return settings.messages.TEL;
                 }
                 return null;
             },
@@ -588,7 +525,7 @@
             minlength : function(field, objVal, params){
                 var min= Number(params[0]);
                 if (helpers.getValue(objVal).length<min)
-                    return helpers.format(messages.MIN_LENGTH, min);
+                    return helpers.format(settings.messages.MIN_LENGTH, min);
                 return null;
             },
             /*
@@ -597,18 +534,24 @@
             maxlength : function(field, objVal, params){
                 var max= Number(params[0]);
                 if (max<helpers.getValue(objVal).length)
-                    return helpers.format(messages.MAX_LENGTH, max);
+                    return helpers.format(settings.messages.MAX_LENGTH, max);
                 return null;
             },
             /*
             * 数値チェック
             */
-            number : function(field, objVal, params, settings){
+            numeric : function(field, objVal){
                 var val = helpers.getValue(objVal);
                 if(!$.isNumeric(val) || (val.indexOf(' ') !== -1)){
-                    return messages.NUMERICAL_VALUE;
+                    return settings.messages.NUMERICAL_VALUE;
                 }
                 return null;
+            },
+            /*
+             * 数値チェック(エイリアス)
+             */
+            number : function(field, objVal){
+                return this.numeric(field, objVal);
             },
             /*
             * 数値桁数チェック
@@ -623,7 +566,7 @@
                 }
                 var reg = new RegExp("^\\d{"+reg_tmp+"}$");
                 if (!reg.test(val)){
-                    return helpers.format(messages.NUM_LENGTH, err_message_tmp);
+                    return helpers.format(settings.messages.NUM_LENGTH, err_message_tmp);
                 }
                 return null;
             },
@@ -633,11 +576,11 @@
             min : function(field, objVal, params){
                 var val = helpers.getValue(objVal);
                 if(!helpers._isInteger(val)) {
-                    return messages.INTEGER;
+                    return settings.messages.INTEGER;
                 }
                 var min= Number(params[0]);
                 if (val<min)
-                    return helpers.format(messages.MIN, min);
+                    return helpers.format(settings.messages.MIN, min);
                 return null;
             },
             /*
@@ -646,11 +589,11 @@
             max : function(field, objVal, params){
                 var val = helpers.getValue(objVal);
                 if(!helpers._isInteger(val)) {
-                    return messages.INTEGER;
+                    return settings.messages.INTEGER;
                 }
                 var max= Number(params[0]);
                 if (max<val)
-                    return helpers.format(messages.MIN, max);
+                    return helpers.format(settings.messages.MIN, max);
                 return null;
             },
             /*
@@ -659,12 +602,12 @@
             range : function(field, objVal, params){
                 var val = helpers.getValue(objVal);
                 if(!helpers._isInteger(val)) {
-                    return messages.INTEGER;
+                    return settings.messages.INTEGER;
                 }
                 var min= Number(params[0]);
                 var max= Number(params[1]);
                 if (val<min || max<val)
-                    return helpers.format(messages.RANGE, min, max);
+                    return helpers.format(settings.messages.RANGE, min, max);
                 return null;
             },
             /*
@@ -677,11 +620,11 @@
                 //				↓
                 // 1980/1/2,1980/1/2,1980,1,2
                 if(!val.match(reg)){
-                    return messages.DATE;
+                    return settings.messages.DATE;
                 }
                 // 年月日チェック
                 if(!helpers._isDate(RegExp.$2, RegExp.$3, RegExp.$4)){
-                    return messages.DATE_INVALID;
+                    return settings.messages.DATE_INVALID;
                 }
                 return null;
             },
@@ -696,14 +639,14 @@
                 //      ↓
                 // 1980/1/2 23:12:11,1980/1/2,1980,1,2, 24:12:11,23:12:11,23,12,11
                 if(!val.match(reg)){
-                    return messages.DATETIME;
+                    return settings.messages.DATETIME;
                 }
                 // 年月日チェック
                 if(!helpers._isDate(RegExp.$2, RegExp.$3, RegExp.$4)){
-                    return messages.DATE_INVALID;
+                    return settings.messages.DATE_INVALID;
                 }
                 if(RegExp.$6 && !helpers._isTime(RegExp.$7, RegExp.$8, RegExp.$10)){
-                    return messages.TIME_INVALID;
+                    return settings.messages.TIME_INVALID;
                 }
                 return null;
             },
@@ -718,14 +661,14 @@
                 //      ↓
                 // 1980/1/2,1980/1/2,1980,1,2
                 if(!val.match(reg)){
-                    return messages.DATE_EX;
+                    return settings.messages.DATE_EX;
                 }
                 // 年月日チェック
                 var y = RegExp.$1;
                 var m = RegExp.$3 ? RegExp.$3 : 1;
                 var d = RegExp.$5 ? RegExp.$5 : 1;
                 if(!helpers._isDate(y, m, d)){
-                    return messages.DATE_INVALID;
+                    return settings.messages.DATE_INVALID;
                 }
                 return null;
             },
@@ -739,19 +682,19 @@
                 if (params[0]==="hm") {
                     reg = new RegExp("^(\\d{1,2}):(\\d{1,2})$", "g");
                     if(!val.match(reg)){
-                        return messages.TIME_HM;
+                        return settings.messages.TIME_HM;
                     }
                     if(!helpers._isTime(RegExp.$1, RegExp.$2, 0)){
-                        return messages.TIME_INVALID;
+                        return settings.messages.TIME_INVALID;
                     }
                 }
                 else {
                     reg = new RegExp("^(\\d{1,2}):(\\d{1,2}):(\\d{1,2})$", "g");
                     if(!val.match(reg)){
-                        return messages.TIME;
+                        return settings.messages.TIME;
                     }
                     if(!helpers._isTime(RegExp.$1, RegExp.$2, RegExp.$3)){
-                        return messages.TIME_INVALID;
+                        return settings.messages.TIME_INVALID;
                     }
                 }
                 return null;
@@ -763,7 +706,7 @@
                 var val = helpers.getValue(objVal);
                 var reg = new RegExp("^\\d{1,3}-\\d{1,4}$", "g");
                 if(!val.match(reg)){
-                    return messages.ZIP;
+                    return settings.messages.ZIP;
                 }
                 return null;
             },
@@ -771,17 +714,16 @@
              * チェックボックス
              */
             checkbox : function(field, objVal, params){
-                var check = objVal.filter(":checked").length;
-                var min= Number(params[0]);
-                var max;
+                var check = objVal.filter(":checked").length,
+                min= Number(params[0]), max;
                 if (2<=params.length){
                     max = Number(params[1]);
                     if (check<min || max<check)
-                        return helpers.format(messages.CHECKBOX_RANGE, min, max);
+                        return helpers.format(settings.messages.CHECKBOX_RANGE, min, max);
                 }
                 else {
                     if (check<min)
-                        return helpers.format(messages.CHECKBOX_MIN, min);
+                        return helpers.format(settings.messages.CHECKBOX_MIN, min);
                 }
             },
 
@@ -795,11 +737,11 @@
              *        params[1 or 2]:エラーメッセージ(オプション)
              */
             regexp : function(field, objVal, params){
-                var val = helpers.getValue(objVal);
+                var val = helpers.getValue(objVal),
+                reg, err_message;
                 if(!$.isArray(params)){
                     params = [params];
                 }
-                var reg, err_message;
                 try{
                     if (typeof params[0] === 'string'){
                         reg = new RegExp(params[0], params[1] ? params[1] : undefined);
@@ -810,10 +752,10 @@
                         err_message = params[1];
                     }
                     if (!reg.test(val))
-                        return (err_message ? err_message:messages.REGEXP_INVALID_VALUE);
+                        return (err_message ? err_message:settings.messages.REGEXP_INVALID_VALUE);
                 }
                 catch(e){
-                    return messages.REGEXP_INVALID_PARAM;
+                    return settings.messages.REGEXP_INVALID_PARAM;
                 }
                 return null;
             }
@@ -846,8 +788,7 @@
              * @returns 値
              */
             getValue : function(objVal){
-                var type = objVal.attr('type');
-                var val;
+                var type = objVal.attr('type'), val;
                 if (type === 'radio'){
                     val = objVal.filter(':checked').val();
                 }
@@ -1042,23 +983,22 @@
             *			""以外:エラー
             */
             _isEmailEx : function(_strEmail) {
-                var emailPat=/^(.+)@(.+)$/;
-                var specialChars="\\(\\)<>@,;:\\\\\\\"\\.\\[\\]";
-                var validChars="[^\\s" + specialChars + "]";
-            //	var quotedUser="(\"[^\"]*\")";
-                var ipDomainPat=/^\[(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})\]$/;
-                var atom=validChars + '+';
-            //	var word="(" + atom + "|" + quotedUser + ")";
-            //	var userPat=new RegExp("^" + word + "(\\." + word + ")*$");
-
-                var domainPat=new RegExp("^" + atom + "(\\." + atom +")*$");
+                var emailPat=/^(.+)@(.+)$/,
+                specialChars="\\(\\)<>@,;:\\\\\\\"\\.\\[\\]",
+                validChars="[^\\s" + specialChars + "]",
+                // quotedUser="(\"[^\"]*\")",
+                ipDomainPat=/^\[(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})\]$/,
+                atom=validChars + '+',
+                // word="(" + atom + "|" + quotedUser + ")",
+                // userPat=new RegExp("^" + word + "(\\." + word + ")*$"),
+                domainPat=new RegExp("^" + atom + "(\\." + atom +")*$"),
 
                 // 最初の「@」で分割
-                var matchArray=_strEmail.match(emailPat);
+                matchArray=_strEmail.match(emailPat);
 
                 // 「@」がない
                 if(matchArray === null) {
-                    return messages.MAIL_NO_AT;
+                    return settings.messages.MAIL_NO_AT;
                 }
 
                 // ユーザーとドメインとして格納
@@ -1077,7 +1017,7 @@
                 if ( IPArray !== null ) {
                     for ( var i=1; i <= 4; i++ ) {
                         if ( IPArray[i] > 255 ) {
-                            return messages.MAIL_INVALID_IP;
+                            return settings.messages.MAIL_INVALID_IP;
                         }
                     }
                 }
@@ -1085,21 +1025,21 @@
                 // ドメイン名パターンチェック
                 var domainArray=domain.match(domainPat);
                 if (domainArray === null) {
-                    return messages.MAIL_NO_DOMAIN;
+                    return settings.messages.MAIL_NO_DOMAIN;
                 }
 
-                var atomPat=new RegExp(atom,"g");
-                var domArr=domain.match(atomPat);
-                var len=domArr.length;
+                var atomPat=new RegExp(atom,"g"),
+                domArr=domain.match(atomPat),
+                len=domArr.length;
 
                 // 最後のドメインが2文字か3文字の以外のとき、エラー
                 // ex) jp,comはOK
                 if (domArr[domArr.length-1].length < 2 || 4 < domArr[domArr.length-1].length) {
-                    return messages.MAIL_INVALID_LOCALE;
+                    return settings.messages.MAIL_INVALID_LOCALE;
                 }
 
                 if (len<2) {
-                    return messages.MAIL_INVALID_DMAIN;
+                    return settings.messages.MAIL_INVALID_DMAIN;
                 }
                 return "";
             },
@@ -1137,6 +1077,69 @@
             return methods.init.apply(this, arguments);
         } else {
             $.error( 'Method "' +  method + '" does not exist in '+pluginName+' plugin!');
+        }
+    };
+    $.fn[pluginName].defaults = {
+        result: null,
+        submit: 'validate',
+        confirm_suffix: '_confirm',
+        zip_suffix: '_after',
+        ymd_suffix_y: '_y',
+        ymd_suffix_m: '_m',
+        ymd_suffix_d: '_d',
+        fields: null,
+        errorType:null,
+        clearError:null,
+        setError:null,
+        focusError: true,
+        focusErrorSpeed: 'fast',
+        // メッセージ定義
+        messages: {
+            VALIDATE_ERROR:'入力に誤りがあります.',
+            // Required
+            REQUIRED:'必須項目です.',
+            REQUIRED_PART:'{0} は必須項目です.',
+            INSUFFICIENT:'不足しています.',
+            INSUFFICIENT_PART:'{0} が不足しています.',
+            CONFIRM:'確認{0}と異なっています.',
+            CONFIRM_FIELD:'項目',
+            // input a numerical value
+            NUMERICAL_VALUE:'数字を入力して下さい.',
+            INTEGER:'整数値を入力して下さい.',
+            INTEGER_PART:'{0} は整数値を入力して下さい.',
+            MIN:'{0} ～ の数字を入力してください.',
+            MAX:'～ {0} の数字を入力してください.',
+            RANGE:'{0} ～ {1} の数字を入力してください.',
+            MIN_LENGTH:'{0}文字以上で入力して下さい.',
+            MAX_LENGTH:'{0}文字以下で入力して下さい.',
+            NUM_LENGTH:'{0}桁の数字を入力してください.',
+            CHECKBOX_MIN:'{0} 個チェックしてください.',
+            CHECKBOX_RANGE:'{0}～{1} 個の間でチェックしてください.',
+            ZENKAKU:'全角で入力してください.',
+            HANKAKU:'半角で入力してください.',
+            ZEN_KANA:'全角カタカナで入力してください.',
+            TEL:'数字-()で入力してください.',
+            ZIP:'[nnn-nnnn]書式で記述してください.',
+            // 日付系
+            DATE:'[YYYY/MM/DD]書式で記述してください.',
+            DATE_EX:'[YYYY/MM/DD] or [YYYY/MM] or [YYYY]書式で記述してください.',
+            DATETIME:'[YYYY/MM/DD hh:mm:ss]書式で記述してください.',
+            TIME:'[hh:mm:ss]書式で記述してください.',
+            TIME_HM:'[hh:mm:ss]書式で記述してください.',
+            DATE_INVALID:'日付が間違っています.',
+            TIME_INVALID:'時間が間違っています.',
+            DATE_PART_Y:'(年)',
+            DATE_PART_M:'(月)',
+            DATE_PART_D:'(日)',
+            // 正規表現系
+            REGEXP_INVALID_PARAM:'正規表現が間違っています.',
+            REGEXP_INVALID_VALUE:'書式が間違っています.',
+            // メール系
+            MAIL_NO_AT:'正しくありません(@).',
+            MAIL_INVALID_IP:'正しくありません(IP).',
+            MAIL_NO_DOMAIN:'ドメイン名がありません(DOMAIN).',
+            MAIL_INVALID_LOCALE:'正しくありません(LOCALE).',
+            MAIL_INVALID_DMAIN:'ドメイン名の書式が誤っています.'
         }
     };
 
