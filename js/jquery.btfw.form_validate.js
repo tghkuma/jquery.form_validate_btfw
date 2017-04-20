@@ -7,7 +7,8 @@
 ;( function( $, window, document, undefined ) {
     'use strict';
 
-    var pluginName = 'formValidate';
+    var pluginName = 'formValidate',
+    pluginSettings = pluginName+'.settings';
     $.fn[pluginName] = function(method) {
         var settings,
         methods = {
@@ -15,7 +16,7 @@
                 settings = $.extend({}, $.fn[pluginName].defaults, options);
                 return this.each(function () {
                     var $element = $(this);
-                    $element.data(pluginName+".settings", settings);
+                    $element.data(pluginSettings, settings);
                     // イベント登録処理
                     var event_names = ['submit'];
                     $.each(event_names, function(){
@@ -46,7 +47,7 @@
              * @param arrErrors
              */
             dispError:function (arrErrors) {
-                settings = $(this).data(pluginName+".settings");
+                settings = $(this).data(pluginSettings);
                 var self = this;
                 $.each(arrErrors, function(i, eroor){
                     methods.setError.apply(self, [eroor.name, eroor.message]);
@@ -62,7 +63,7 @@
              * @param name
              */
             focusError:function (name) {
-                settings = $(this).data(pluginName+".settings");
+                settings = $(this).data(pluginSettings);
                 var field = $(this).find("*[name='" + name + "']");
                 $(field).focus();
                 var p = $(field).offset().top - $(window).innerHeight()/2;
@@ -77,7 +78,7 @@
              * @param name 未指定時全て
              */
             clearError:function (name) {
-                settings = $(this).data(pluginName+".settings");
+                settings = $(this).data(pluginSettings);
                 if ($.isFunction(settings.clearError)){
                     settings.clearError.apply(this, [name]);
                 }
@@ -96,7 +97,7 @@
              * @param message
              */
             setError:function (name, message) {
-                settings = $(this).data(pluginName+".settings");
+                settings = $(this).data(pluginSettings);
                 if ($.isFunction(settings.setError)){
                     settings.setError.apply(this, [name, message]);
                 }
@@ -192,7 +193,7 @@
              * パラメータチェック
              */
             validate:function (options) {
-                settings = $.extend($(this).data(pluginName+".settings"), options);
+                settings = $.extend($(this).data(pluginSettings), options);
 
                 methods.clearError.apply(this);
                 var result = true;
@@ -212,12 +213,12 @@
              * (エラー時アラート)
              */
             validate_alert:function (options) {
-                settings = $.extend($(this).data(pluginName+".settings"), options);
+                settings = $.extend($(this).data(pluginSettings), options);
 
                 var result = true;
                 var arrErrors = methods.getValidateResult.apply(this, [settings]);
                 if (0 < arrErrors.length) {
-                    alert(messages.VALIDATE_ERROR+'\n' + helpers.join(arrErrors));
+                    alert(settings.messages.VALIDATE_ERROR+'\n' + helpers.join(arrErrors));
                     if (settings.focusError){
                         // 最初のエラーにフォーカス
                         methods.focusError.apply(this, [arrErrors[0].name]);
@@ -235,7 +236,7 @@
              */
             getValidateResult:function (options) {
                 var form = this;
-                settings = $.extend($(this).data(pluginName+".settings"), options);
+                settings = $.extend($(this).data(pluginSettings), options);
 
                 var arrErrors = [];
                 var fields = settings.fields;
@@ -455,7 +456,7 @@
             /*
             * 確認項目
             */
-            confirm : function(field, objVal, params, settings){
+            confirm : function(field, objVal, params){
                 var confirmVal = $(this).find("*[name='"+field.name+settings.confirm_suffix+"']");
                 if(!objVal || !confirmVal || helpers.getValue(objVal) !== confirmVal.val())
                     return helpers.format(settings.messages.CONFIRM, (field.d_name ? field.d_name:settings.messages.CONFIRM_FIELD));

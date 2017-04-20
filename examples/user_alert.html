@@ -3,20 +3,14 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <title>ユーザー編集</title>
+  <title>Alert</title>
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" type="text/css">
   <script src="//code.jquery.com/jquery-3.2.0.min.js"></script>
   <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <script src="../js/jquery.btfw.form_validate.js"></script>
   <script type='text/javascript'>
     $(function() {
-        // ユーザー定義メッセージ
-        $.extend($.fn.formValidate.defaults.messages, {
-            REQUIRED:'ここは必須です',
-            VALIDATE_ERROR:'何かおかしいです'
-        });
-
-      $("form[name=form]").formValidate({ fields:[
+      $("form[name=form]").formValidate({ submit:'validate_alert', fields:[
         { name:'account', d_name:'アカウント', rules:['required', 'minlength:2', 'hankaku',
                 { rule:'regexp', params:[/^[A-Z\d_-]*$/i, '英数字_-のみ使用出来ます']}]},
         { name:'password', d_name:'パスワード', rules:['required', 'hankaku', 'confirm',
@@ -26,18 +20,13 @@
         { name:'birthday', d_name:'日付', rules:['date']},
         { name:'comment', d_name:'コメント', rules:['maxlength:16']}
       ]});
-
-      $('#destroy').on('click', function () {
-          $form.formValidate('clearError')
-              .formValidate('destroy');
-      });
     });
   </script>
 </head>
 <body>
 <div class="container">
   <div class="content">
-    <h1>サンプル(エラーメッセージ書き換え)</h1>
+    <h1>Alert</h1>
     <form name="form" action="#" method="post" class="form-horizontal">
       <fieldset>
         <div class="form-group">
@@ -63,7 +52,7 @@
         <div class="form-group">
           <label class="control-label col-sm-2" for="id_birthday">誕生日</label>
           <div class="col-sm-4">
-            <input type="text" class="form-control" id="id_birthday" name="birthday">
+            <input type="text" class="form-control" id="id_birthday" name="birthday" placeholder="YYYY/MM/DD">
           </div>
         </div>
         <div class="form-group">
@@ -80,9 +69,8 @@
         </div>
       </fieldset>
       <div class="form-actions" style="text-align: center">
-        <input type="submit" class="btn btn-primary" value="更新">
+        <input type="submit" class="btn btn-primary" value="登録">
         <input type="reset" class="btn btn-default" value="リセット">
-        <button type="button" id="destroy" class="btn btn-default">Validate解除</button>
       </div>
     </form>
 

@@ -81,7 +81,8 @@ hiragana | _なし_ |全角ひらがな
 minlength|<数値>|最小文字数
 maxlength|<数値>|最大文字数
 numlength|<数値>[,<数値>]|最小文字数[最小～最大文字数]
-number | _なし_ | 数値
+numeric | _なし_ | 数値
+number | _なし_ | numericのエイリアス
 min|<数値>|最小値
 max|<数値>|最大値
 checkbox|<最少選択数>[,<最大選択数>]| チェックボックスの選択チェック
