@@ -15,8 +15,7 @@
           REQUIRED:'何か',
           DATE:'年/月/日で入力してください'
       });
-      $form = $("form[name=form]");
-      $form.formValidate({ fields:[
+      $("form[name=form]").formValidate({ fields:[
         { name:'name', d_name:'名前', rules:['required', 'zenkaku']},
         { name:'birthday', d_name:'日付', rules:['date']}
       ]});

@@ -10,7 +10,7 @@
   <script src="../js/jquery.btfw.form_validate.js"></script>
   <script type='text/javascript'>
     $(function() {
-      $form = $("form[name=form]");
+      var $form = $("form[name=form]");
       $form.formValidate({ fields:[
         { name:'account', d_name:'アカウント', rules:['required', 'minlength:2', 'hankaku',
                 { rule:'regexp', params:[/^[A-Z\d_-]*$/i, '英数字_-のみ使用出来ます']}]},

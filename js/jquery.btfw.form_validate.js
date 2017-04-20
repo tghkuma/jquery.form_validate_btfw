@@ -378,7 +378,7 @@
              * 年月日チェック
              * フォーム name+"_y", name+"_m", name+"_d"のチェックを行う
              */
-            ymd : function(field, objVal, params, settings){
+            ymd : function(field, objVal, params){
                 // 変数宣言
                 var arrErrors = [];
 
@@ -558,9 +558,9 @@
             * 数値桁数チェック
             */
             numlength : function(field, objVal, params){
-                var val = helpers.getValue(objVal);
-                var reg_tmp = params[0];
-                var err_message_tmp = params[0];
+                var val = helpers.getValue(objVal),
+                reg_tmp = params[0],
+                err_message_tmp = params[0];
                 if (params[1]){
                     reg_tmp += ","+params[1];
                     err_message_tmp += "～"+params[1];
@@ -605,8 +605,8 @@
                 if(!helpers._isInteger(val)) {
                     return settings.messages.INTEGER;
                 }
-                var min= Number(params[0]);
-                var max= Number(params[1]);
+                var min= Number(params[0]),
+                    max= Number(params[1]);
                 if (val<min || max<val)
                     return helpers.format(settings.messages.RANGE, min, max);
                 return null;
@@ -615,8 +615,8 @@
             * 日付
             */
             date : function(field, objVal){
-                var val = helpers.getValue(objVal);
-                var reg = new RegExp("^((\\d{1,4})[/-](\\d{1,2})[/-](\\d{1,2}))$", "g");
+                var val = helpers.getValue(objVal),
+                    reg = new RegExp("^((\\d{1,4})[/-](\\d{1,2})[/-](\\d{1,2}))$", "g");
                 // 1980/1/2
                 //				↓
                 // 1980/1/2,1980/1/2,1980,1,2
@@ -634,8 +634,8 @@
             * [YYYY-MM-DD hh:mm:ss]または[YYYY/MM/DD]の書式でチェックする
             */
             datetime : function(field, objVal){
-                var val = helpers.getValue(objVal);
-                var reg = new RegExp("^((\\d{1,4})[/-](\\d{1,2})[/-](\\d{1,2}))( ((\\d{1,2}):(\\d{1,2})(:(\\d{1,2}))?))?$", 'g');
+                var val = helpers.getValue(objVal),
+                    reg = new RegExp("^((\\d{1,4})[/-](\\d{1,2})[/-](\\d{1,2}))( ((\\d{1,2}):(\\d{1,2})(:(\\d{1,2}))?))?$", 'g');
                 // 1980/1/2 24:12:11
                 //      ↓
                 // 1980/1/2 23:12:11,1980/1/2,1980,1,2, 24:12:11,23:12:11,23,12,11
@@ -656,8 +656,8 @@
             * [YYYY/MM/DD] or [YYYY/MM] or [YYYY]の書式でチェックする
             */
             date_ex : function(field, objVal){
-                var val = helpers.getValue(objVal);
-                var reg = new RegExp("^(\\d{1,4})([/-](\\d{1,2})([/-](\\d{1,2}))?)?$");
+                var val = helpers.getValue(objVal),
+                    reg = new RegExp("^(\\d{1,4})([/-](\\d{1,2})([/-](\\d{1,2}))?)?$");
                 // 1980/1/2
                 //      ↓
                 // 1980/1/2,1980/1/2,1980,1,2
@@ -665,9 +665,9 @@
                     return settings.messages.DATE_EX;
                 }
                 // 年月日チェック
-                var y = RegExp.$1;
-                var m = RegExp.$3 ? RegExp.$3 : 1;
-                var d = RegExp.$5 ? RegExp.$5 : 1;
+                var y = RegExp.$1,
+                    m = RegExp.$3 ? RegExp.$3 : 1,
+                    d = RegExp.$5 ? RegExp.$5 : 1;
                 if(!helpers._isDate(y, m, d)){
                     return settings.messages.DATE_INVALID;
                 }
@@ -678,8 +678,8 @@
             * [hh:mm:ss]の書式でチェックする
             */
             time : function(field, objVal, params){
-                var val = helpers.getValue(objVal);
-                var reg;
+                var val = helpers.getValue(objVal),
+                    reg;
                 if (params[0]==="hm") {
                     reg = new RegExp("^(\\d{1,2}):(\\d{1,2})$", "g");
                     if(!val.match(reg)){
@@ -704,8 +704,8 @@
              * 郵便番号
              */
             zip : function(field, objVal){
-                var val = helpers.getValue(objVal);
-                var reg = new RegExp("^\\d{1,3}-\\d{1,4}$", "g");
+                var val = helpers.getValue(objVal),
+                    reg = new RegExp("^\\d{1,3}-\\d{1,4}$", "g");
                 if(!val.match(reg)){
                     return settings.messages.ZIP;
                 }
@@ -716,7 +716,7 @@
              */
             checkbox : function(field, objVal, params){
                 var check = objVal.filter(":checked").length,
-                min= Number(params[0]), max;
+                    min= Number(params[0]), max;
                 if (2<=params.length){
                     max = Number(params[1]);
                     if (check<min || max<check)
@@ -739,7 +739,7 @@
              */
             regexp : function(field, objVal, params){
                 var val = helpers.getValue(objVal),
-                reg, err_message;
+                    reg, err_message;
                 if(!$.isArray(params)){
                     params = [params];
                 }
