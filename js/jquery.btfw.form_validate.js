@@ -552,7 +552,7 @@
              * 数値チェック(エイリアス)
              */
             number : function(field, objVal){
-                return this.numeric(field, objVal);
+                return validateExistsMethods.numeric.apply(this, [field, objVal]);
             },
             /*
             * 数値桁数チェック
