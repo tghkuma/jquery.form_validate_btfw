@@ -168,6 +168,10 @@ getValidateResultメソッドの戻り値はエラーメッセージは下記構
 ];
 ````
 
+## build
+
+「compress.sh」を確認
+
 ## ライセンス
 
-Copyright &copy; 2014-2017 [Team-Grasshopper](http://team-grasshopper.info/)
+Copyright &copy; 2014-2019 [Team-Grasshopper](https://team-grasshopper.info/)
