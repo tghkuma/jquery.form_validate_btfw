@@ -1,7 +1,7 @@
 /**
  * パラメータチェックプラグイン
  * (TwitterBootstrap3.x対応)
- * v.1.5.3
+ * v.1.6.3
  * https://github.com/tghkuma/jquery.form_validate_btfw
  */
 ;( function( $, window, document, undefined ) {
