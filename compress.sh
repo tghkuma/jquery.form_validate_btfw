@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+cd `dirname $0`
+
 # UglifyJS 3版
 # install: npm install uglify-js -g
 #uglifyjs -c -m -o js/jquery.btfw.form_validate.min.js --source-map -- js/jquery.btfw.form_validate.js
