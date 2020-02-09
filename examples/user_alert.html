@@ -19,6 +19,7 @@
         { name:'name', d_name:'名前', rules:['required', 'zenkaku']},
         { name:'email', d_name:'EMAIL', rules:['email']},
         { name:'birthday', d_name:'日付', rules:['date']},
+        { name:'birthday2', d_name:'誕生日2', rules:['ymd']},
         { name:'comment', d_name:'コメント', rules:['maxlength:16']}
       ]});
     });
@@ -54,6 +55,14 @@
           <label class="col-form-label col-sm-4" for="id_birthday">誕生日</label>
           <div class="col-sm-8">
             <input type="text" class="form-control" id="id_birthday" name="birthday" placeholder="YYYY/MM/DD">
+          </div>
+        </div>
+        <div class="form-group row">
+          <label class="col-form-label col-sm-4" for="id_birthday2_y">誕生日2</label>
+          <div class="col-sm-8">
+            <input type="text" class="form-control" id="id_birthday2_y" name="birthday2_y" placeholder="YYY">
+            <input type="text" class="form-control" id="id_birthday2_m" name="birthday2_m" placeholder="MM">
+            <input type="text" class="form-control" id="id_birthday2_d" name="birthday2_d" placeholder="DD">
           </div>
         </div>
         <div class="form-group row">

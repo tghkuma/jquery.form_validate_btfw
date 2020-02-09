@@ -152,13 +152,7 @@
 
                 if (field.attr('type')!=='radio' && field.attr('type')!=='checkbox'){
                     $(field).addClass('is-invalid');
-                    let input_group = $(field).closest('.input-group');
-                    if ($(input_group).length !== 0){
-                        $(input_group).after(error_message);
-                    }
-                    else{
-                        $(field).filter(':last').after(error_message);
-                    }
+                    $(field).filter(':last').after(error_message);
                 }
                 else{
                     let form_check = $(field).closest('.form-check').addClass('is-invalid');
@@ -487,15 +481,15 @@
                     }
                 }
                 // 年数値チェック
-                if(!helpers._isInteger(year)) {
+                if(b_year && !helpers._isInteger(year)) {
                     arrErrors.push(helpers.format(settings.messages.INTEGER_PART, settings.messages.DATE_PART_Y));
                 }
                 // 月数値チェック
-                if(!helpers._isInteger(month)) {
+                if(b_month && !helpers._isInteger(month)) {
                     arrErrors.push(helpers.format(settings.messages.INTEGER_PART, settings.messages.DATE_PART_M));
                 }
                 // 日数値チェック
-                if(!helpers._isInteger(day)) {
+                if(b_day && !helpers._isInteger(day)) {
                     arrErrors.push(helpers.format(settings.messages.INTEGER_PART, settings.messages.DATE_PART_D));
                 }
 
