@@ -150,9 +150,13 @@
                 let field = $(this).find("*[name='" + name + "']");
                 let error_message = '<div class="invalid-feedback">' + message + '</div>';
 
-                if (field.attr('type')!=='radio' && field.attr('type')!=='checkbox'){
+                if (['radio', 'checkbox'].indexOf(field.attr('type')) === -1){
                     $(field).addClass('is-invalid');
-                    $(field).filter(':last').after(error_message);
+                    if (!$(field).parent().hasClass('input-group')) {
+                        $(field).filter(':last').after(error_message);
+                    }else{
+                        $(field).parent().append(error_message);
+                    }
                 }
                 else{
                     let form_check = $(field).closest('.form-check').addClass('is-invalid');
@@ -192,7 +196,7 @@
 
                 let error_message = '<span class="help-block error_message">' + message + '</span>';
                 $(field).closest('.form-group').addClass('has-error');
-                if (field.attr('type')!=='radio' && field.attr('type')!=='checkbox'){
+                if (['radio', 'checkbox'].indexOf(field.attr('type')) === -1){
                     let input_group = $(field).closest('.input-group');
                     if ($(input_group).length !== 0){
                         $(input_group).after(error_message);
