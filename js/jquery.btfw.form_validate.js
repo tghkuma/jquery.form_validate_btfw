@@ -7,7 +7,7 @@
 ;( function( $, window, document, undefined ) {
     'use strict';
 
-    let pluginName = 'formValidate',
+    const pluginName = 'formValidate',
     pluginSettings = pluginName+'.settings';
     $.fn[pluginName] = function(method) {
         let settings,
@@ -15,7 +15,7 @@
             init:function (options) {
                 settings = $.extend({}, $.fn[pluginName].defaults, options);
                 return this.each(function () {
-                    let $element = $(this);
+                    const $element = $(this);
                     $element.data(pluginSettings, settings);
                     // イベント登録処理
                     let event_names = ['submit'];
@@ -34,9 +34,9 @@
             },
             destroy : function( ) {
                 return this.each(function(){
-                    let $element = $(this);
+                    const $element = $(this);
                     // イベント削除処理
-                    let event_names = ['submit'];
+                    const event_names = ['submit'];
                     $.each(event_names, function(){
                         $element.off(this + '.' + pluginName);
                     });
@@ -47,8 +47,8 @@
              * @param arrErrors
              */
             dispError:function (arrErrors) {
-                settings = $(this).data(pluginSettings);
-                let self = this;
+                let settings = $(this).data(pluginSettings);
+                const self = this;
                 $.each(arrErrors, function(i, eroor){
                     methods.setError.apply(self, [eroor.name, eroor.message]);
                 });
@@ -63,8 +63,8 @@
              * @param name
              */
             focusError:function (name) {
-                settings = $(this).data(pluginSettings);
-                let field = $(this).find("*[name='" + name + "']");
+                let settings = $(this).data(pluginSettings);
+                const field = $(this).find("*[name='" + name + "']");
                 $(field).focus();
                 let p = $(field).offset().top - $(window).innerHeight()/2;
                 if (p < 0){
@@ -83,7 +83,7 @@
              * @param name 未指定時全て
              */
             clearError:function (name) {
-                settings = $(this).data(pluginSettings);
+                let settings = $(this).data(pluginSettings);
                 if ($.isFunction(settings.clearError)){
                     settings.clearError.apply(this, [name]);
                 }
@@ -105,7 +105,7 @@
              * @param message
              */
             setError:function (name, message) {
-                settings = $(this).data(pluginSettings);
+                let settings = $(this).data(pluginSettings);
                 if ($.isFunction(settings.setError)){
                     settings.setError.apply(this, [name, message]);
                 }
@@ -147,8 +147,8 @@
              * @param message
              */
             setErrorBootstrap:function (name, message) {
-                let field = $(this).find("*[name='" + name + "']");
-                let error_message = '<div class="invalid-feedback">' + message + '</div>';
+                const field = $(this).find("*[name='" + name + "']");
+                const error_message = '<div class="invalid-feedback">' + message + '</div>';
 
                 if (['radio', 'checkbox'].indexOf(field.attr('type')) === -1){
                     $(field).addClass('is-invalid');
@@ -172,7 +172,7 @@
              */
             clearErrorBootstrap3:function (name) {
                 if (name){
-                    let field = $(this).find("*[name='" + name + "']");
+                    const field = $(this).find("*[name='" + name + "']");
                     $(field).closest('.form-group')
                         .removeClass('has-error')
                         .find('.error_message').remove();
@@ -192,9 +192,9 @@
              * @param message
              */
             setErrorBootstrap3:function (name, message) {
-                let field = $(this).find("*[name='" + name + "']");
+                const field = $(this).find("*[name='" + name + "']");
 
-                let error_message = '<span class="help-block error_message">' + message + '</span>';
+                const error_message = '<span class="help-block error_message">' + message + '</span>';
                 $(field).closest('.form-group').addClass('has-error');
                 if (['radio', 'checkbox'].indexOf(field.attr('type')) === -1){
                     let input_group = $(field).closest('.input-group');
@@ -238,7 +238,7 @@
              * @param message
              */
             setErrorTb2:function (name, message) {
-                let field = $(this).find("*[name='" + name + "']");
+                const field = $(this).find("*[name='" + name + "']");
                 $(field).closest('.control-group').addClass('error');
                 $(field).closest('.controls').append('<div class="help-block error_message">' + message + '</div>');
                 return this;
@@ -425,7 +425,24 @@
             }
         };
 
-        let validateMethods = {
+        const validateMethods = {
+            /*
+            * 数値チェック(値なし)
+            */
+            numeric : function(field, objVal) {
+                // type="number"時の仮対策
+                if (objVal[0] && objVal[0].validity && objVal[0].validity.badInput) {
+                    return objVal[0].validationMessage;
+                }
+                return null;
+            },
+            /*
+             * 数値チェック(値なし,エイリアス)
+             */
+            number : function(field, objVal){
+                return validateMethods.numeric.apply(this, [field, objVal]);
+            },
+
             /*
              * 郵便番号の4桁部分が入力された場合
              * 3桁部が入力必須になるチェック
@@ -515,7 +532,7 @@
         *
         * @return	string|null エラーメッセージ 文字列 or 配列
         */
-        let validateExistsMethods = {
+        const validateExistsMethods = {
             /*
             * 確認項目
             */
@@ -825,7 +842,7 @@
             }
         };
 
-        let helpers = {
+        const helpers = {
             /**
              * 値が存在するか？
              *
@@ -1167,21 +1184,21 @@
             CONFIRM:'確認{0}と異なっています.',
             CONFIRM_FIELD:'項目',
             // input a numerical value
-            NUMERICAL_VALUE:'数字を入力して下さい.',
+            NUMERICAL_VALUE:'数値を入力して下さい.',
             INTEGER:'整数値を入力して下さい.',
             INTEGER_PART:'{0} は整数値を入力して下さい.',
-            MIN:'{0} ～ の数字を入力してください.',
-            MAX:'～ {0} の数字を入力してください.',
-            RANGE:'{0} ～ {1} の数字を入力してください.',
+            MIN:'{0} ～ の数値を入力してください.',
+            MAX:'～ {0} の数値を入力してください.',
+            RANGE:'{0} ～ {1} の数値を入力してください.',
             MIN_LENGTH:'{0}文字以上で入力して下さい.',
             MAX_LENGTH:'{0}文字以下で入力して下さい.',
-            NUM_LENGTH:'{0}桁の数字を入力してください.',
+            NUM_LENGTH:'{0}桁の数値を入力してください.',
             CHECKBOX_MIN:'{0} 個チェックしてください.',
             CHECKBOX_RANGE:'{0}～{1} 個の間でチェックしてください.',
             ZENKAKU:'全角で入力してください.',
             HANKAKU:'半角で入力してください.',
             ZEN_KANA:'全角カタカナで入力してください.',
-            TEL:'数字-()で入力してください.',
+            TEL:'数値-()で入力してください.',
             ZIP:'[nnn-nnnn]書式で記述してください.',
             // 日付系
             DATE:'[YYYY/MM/DD]書式で記述してください.',

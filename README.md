@@ -174,10 +174,37 @@ getValidateResultメソッドの戻り値はエラーメッセージは下記構
 ];
 ````
 
-## build
+## 制限
 
-「compress.sh」を確認
+### ブラウザバリデーション無効
 
-## ライセンス
+ブラウザのバリデーションも発動してしまうので、 `<form>` タグに `novalidate` 属性を付加する。
 
-Copyright &copy; 2014-2019 [Team-Grasshopper](https://team-grasshopper.info/)
+```html
+    <form 〜 novalidate>
+```
+
+### input[type="number"]
+
+html5の `<input type="number" 〜>` を使用して数値以外を入力した場合、仕様によりJavascript側で値を取得できないので、エラーチェックができない。  
+本パッケージではブラウザの機能を使用して代替え処理を行っているが、ブラウザにより処理が異なる
+
+ブラウザ|挙動|本パッケージ対応
+---|---|---
+Firefox/Safari/Edge|入力値は存在するが、Javascript値が空になる|ブラウザの「validity.badInput」で判定し「validationMessage」を返す
+Chrome|そもそも入力できない|未入力扱い
+Internet Explorer 11|フォーカスが無くなった時、入力値が空になる|未入力扱い
+
+### Bootstrapレイアウトでエラー表示されないルール
+
+`zip_ex` , `ymd` はバリデーション機能はあるが、Bootstrapでのエラー表示ができない。  
+Alert,独自エラー表示では対応可能。  
+過去互換性のために残しているが、 `zip` , `date` の利用を推奨する。
+
+## build(minify)手順
+
+「[compress.sh](compress.sh)」を参照
+
+## Copyright
+
+Copyright &copy; 2014-2020 [Team-Grasshopper Co., Ltd.](https://team-grasshopper.info/)
