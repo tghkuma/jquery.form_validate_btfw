@@ -3,7 +3,7 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta charset="utf-8">
-  <title>Alert</title>
+  <title>独自エラー表示</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
   <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
@@ -11,7 +11,36 @@
   <script src="../js/jquery.btfw.form_validate.js"></script>
   <script>
     $(function() {
-      $("form[name=form]").formValidate({ submit:'validate_alert', fields:[
+      let $form = $("form[name=form]");
+      let $alert = $("#id_alert");
+
+      // エラー結果取得
+      let funcDispError = function() {
+        let errors = $form.formValidate('getValidateResult');
+        if (errors.length > 0) {
+          let alert = [];
+          errors.forEach (function(error){
+            /**
+             *  @namespace error.name フィールド名
+             *  @namespace error.d_name フィールド表示名
+             *  @namespace error.message エラーメッセージ
+             */
+            alert.push((error.d_name ? error.d_name: error.name)+' : '+error.message);
+          });
+          $alert.html(alert.join('<br>'));
+          $alert.show();
+          return false;
+        }
+      };
+      // エラー結果クリア
+      let funcClearError = function() {
+        $alert.text(null);
+        $alert.hide();
+      };
+
+      $form.formValidate({ submit: funcDispError,
+        clearError: funcClearError,
+        fields:[
         { name:'account', d_name:'アカウント', rules:['required', 'minlength:2', 'hankaku',
                 { rule:'regexp', params:[/^[A-Z\d_-]*$/i, '英数字_-のみ使用出来ます']}]},
         { name:'password', d_name:'パスワード', rules:['required', 'hankaku', 'confirm',
@@ -19,16 +48,19 @@
         { name:'name', d_name:'名前', rules:['required', 'zenkaku']},
         { name:'email', d_name:'EMAIL', rules:['email']},
         { name:'birthday', d_name:'日付', rules:['date']},
-        { name:'birthday2', d_name:'誕生日2', rules:['ymd']},
         { name:'comment', d_name:'コメント', rules:['maxlength:16']}
       ]});
+      $('#clear_error').on('click', function () {
+        $form.formValidate('clearError');
+      });
     });
   </script>
 </head>
 <body>
 <div class="container">
   <div class="content">
-    <h1>Alert</h1>
+    <h1>独自エラー表示</h1>
+    <div id="id_alert" class="alert alert-danger" role="alert" style="display: none"></div>
     <form name="form" action="#" method="post">
       <fieldset>
         <div class="form-group row">
@@ -58,14 +90,6 @@
           </div>
         </div>
         <div class="form-group row">
-          <label class="col-form-label col-sm-4" for="id_birthday2_y">誕生日2</label>
-          <div class="col-sm-8">
-            <input type="text" class="form-control" id="id_birthday2_y" name="birthday2_y" placeholder="YYY">
-            <input type="text" class="form-control" id="id_birthday2_m" name="birthday2_m" placeholder="MM">
-            <input type="text" class="form-control" id="id_birthday2_d" name="birthday2_d" placeholder="DD">
-          </div>
-        </div>
-        <div class="form-group row">
           <label class="col-form-label col-sm-4" for="id_email">EMAIL</label>
           <div class="col-sm-8">
             <input type="text" class="form-control" id="id_email" name="email" size="64" maxlength="64" placeholder="emailチェック">
@@ -81,6 +105,7 @@
       <div class="form-actions" style="text-align: center">
         <input type="submit" class="btn btn-primary" value="登録">
         <input type="reset" class="btn btn-secondary" value="リセット">
+        <input id="clear_error" type="button" class="btn btn-secondary" value="エラークリア">
       </div>
     </form>
     <a href="index.html">一覧へ</a>

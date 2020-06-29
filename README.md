@@ -1,4 +1,4 @@
-# JQuery Form Validate(Bootstrap3/TwitterBootstrap2.x)
+# JQuery Form Validate(Bootstrap4/Bootstrap3/TwitterBootstrap2.x)
 
 ## 解説
 このプログラムは、Bootstrap3形式のフォーム値のValidateを行う。
@@ -28,16 +28,15 @@ $("フォーム").formValidate('validate');
 
 オプション名 | 初期値 | 機能
 --- | --- | ---
-result| null|結果を指定functionに渡す
 submit |"validate" | Submit時に行う処理、メソッド文字列 or 関数 or null(何もしない)
 confirm_suffix|"\_confirm" | confirmルールの確認フィールドの接尾語
 zip_suffix | "\_after" |zip_exルールの4桁フィールドの接尾語
 fields | null |各種フィールド定義配列
-errorType| null | "tb2"=TwitterBootstrap2形式でエラーを表示
+errorType| null | "bs3"=Bootstrap3形式でエラーを表示<br>"tb2"=TwitterBootstrap2形式でエラーを表示
 clearError | null | エラークリア関数を指定
 setError| null | エラー設定関数を指定
 focusError | true | true=エラー時に最初のエラーにフォーカスする<br>メソッド:validate, validate_alertで利用
-focusErrorSpeed | "fast" | フォーカスのスクロール<br>(JQuery animateのduration. "slow","normal","fast"またはミリ秒)
+focusErrorSpeed | "fast" | フォーカスのスクロール<br>(JQuery animateのduration. "slow","normal","fast"またはミリ秒)<br>JQuery slim版ではanimateは未サポート
 
 ### フィールド定義
 
@@ -70,8 +69,6 @@ getValidateResult|[オプションオブジェクト]|パラメータチェッ�
 
 ルール名 | パラメータ | 機能
 ---|---|---
-zip_ex | _なし_ |郵便番号.<br>nameとname+"\_after"の2か所をチェック
-ymd | _なし_ | 年月日.<br>name+"\_Y", name+"\_M", name+"\_D"の３か所をチェック
 email | _なし_ | E-Mail
 tel | _なし_ |電話番号
 zenkaku | _なし_ |全角
@@ -86,7 +83,6 @@ number | _なし_ | numericのエイリアス
 min|<数値>|最小値
 max|<数値>|最大値
 checkbox|<最少選択数>[,<最大選択数>]| チェックボックスの選択チェック
-radio| _なし_ |ラジオ必須チェック
 range|<最小値>,<最大値>|数値範囲
 date | _なし_ |日付
 datetime | _なし_ |日時
@@ -95,14 +91,24 @@ zip | _なし_ |郵便番号
 date_ex | _なし_ |日付.<br>[YYYY/MM/DD] or [YYYY/MM] or [YYYY]の書式でチェックする
 regexp|<正規表現>[,<フラグ>[,<エラーメッセージ>]]| 正規表現は文字列か正規表現リテラル(/<正規表現>/)が指定可.<br><フラグ>,<エラーメッセージ>は省略可<br>正規表現リテラルの場合,第2パラメータは<メッセージ>となる
 <関数>|_関数による_|独自Validate関数を実行する
+zip_ex | _なし_ |(※)郵便番号.<br>nameとname+"\_after"の2か所をチェック
+ymd | _なし_ | (※)年月日.<br>name+"\_Y", name+"\_M", name+"\_D"の３か所をチェック
+
+(※)バリデーション機能はあるが、Bootstrapでのエラー表示ができない。  
+Alert,独自エラー表示では対応可能。
 
 ### パラメータ書式
 
 ルールにパラメータが必要な物は配列かObjectか文字列で定義する。
 
 #### 配列版
+その1
 ````
-[<ルール名>,[<パラメータ1>,<パラメータ2>...,<パラメータn>]
+[<ルール名>,<パラメータ1>,<パラメータ2>...,<パラメータn>]
+````
+その2
+````
+[<ルール名>,[<パラメータ1>,<パラメータ2>...,<パラメータn>]]
 ````
 
 #### Object版
@@ -168,10 +174,37 @@ getValidateResultメソッドの戻り値はエラーメッセージは下記構
 ];
 ````
 
-## build
+## 制限
 
-「compress.sh」を確認
+### ブラウザバリデーション無効
 
-## ライセンス
+ブラウザのバリデーションも発動してしまうので、 `<form>` タグに `novalidate` 属性を付加する。
 
-Copyright &copy; 2014-2019 [Team-Grasshopper](https://team-grasshopper.info/)
+```html
+    <form 〜 novalidate>
+```
+
+### input[type="number"]
+
+html5の `<input type="number" 〜>` を使用して数値以外を入力した場合、仕様によりJavascript側で値を取得できないので、エラーチェックができない。  
+本パッケージではブラウザの機能を使用して代替え処理を行っているが、ブラウザにより処理が異なる
+
+ブラウザ|挙動|本パッケージ対応
+---|---|---
+Firefox/Safari/Edge|入力値は存在するが、Javascript値が空になる|ブラウザの「validity.badInput」で判定し「validationMessage」を返す
+Chrome|そもそも入力できない|未入力扱い
+Internet Explorer 11|フォーカスが無くなった時、入力値が空になる|未入力扱い
+
+### Bootstrapレイアウトでエラー表示されないルール
+
+`zip_ex` , `ymd` はバリデーション機能はあるが、Bootstrapでのエラー表示ができない。  
+Alert,独自エラー表示では対応可能。  
+過去互換性のために残しているが、 `zip` , `date` の利用を推奨する。
+
+## build(minify)手順
+
+「[compress.sh](compress.sh)」を参照
+
+## Copyright
+
+Copyright &copy; 2014-2020 [Team-Grasshopper Co., Ltd.](https://team-grasshopper.info/)

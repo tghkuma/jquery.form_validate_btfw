@@ -1,14 +1,13 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ja_JP">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta charset="utf-8">
   <title>メソッド操作</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-  <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-  <script src="../js/jquery.btfw.form_validate.js"></script>
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="//code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="../../js/jquery.btfw.form_validate.js"></script>
   <script>
     $(function() {
       var $form = $("form[name=form]");
@@ -39,42 +38,42 @@
 <div class="container">
   <div class="content">
     <h1>メソッド操作</h1>
-    <form name="form" action="#" method="post">
+    <form name="form" action="#" method="post" class="form-horizontal">
       <fieldset>
-        <div class="form-group row">
-          <label class="col-form-label col-sm-4" for="id_account">アカウント</label>
+        <div class="form-group">
+          <label class="control-label col-sm-4" for="id_account">アカウント</label>
           <div class="col-sm-8">
             <input type="text" class="form-control" id="id_account" name="account" size="64" maxlength="64" placeholder="必須項目,半角">
           </div>
         </div>
-        <div class="form-group row">
-          <label class="col-form-label col-sm-4" for="id_password">パスワード</label>
+        <div class="form-group">
+          <label class="control-label col-sm-4" for="id_password">パスワード</label>
           <div class="col-sm-8">
             <input type="password" class="form-control" id="id_password" name="password" size="32" maxlength="16" placeholder="必須項目,半角"><br>
             <input type="password" class="form-control" name="password_confirm" size="32" maxlength="16" placeholder="確認パスワード">
-            <small class="form-text text-muted">確認のためパスワードをもう一度入力してください</small>
+            <span class="help-block">確認のためパスワードをもう一度入力してください</span>
           </div>
         </div>
-        <div class="form-group row">
-          <label class="col-form-label col-sm-4" for="id_name">名前</label>
+        <div class="form-group">
+          <label class="control-label col-sm-4" for="id_name">名前</label>
           <div class="col-sm-8">
             <input type="text" class="form-control" id="id_name" name="name" size="64" maxlength="64" placeholder="必須項目/全角">
           </div>
         </div>
-        <div class="form-group row">
-          <label class="col-form-label col-sm-4" for="id_birthday">誕生日</label>
+        <div class="form-group">
+          <label class="control-label col-sm-4" for="id_birthday">誕生日</label>
           <div class="col-sm-8">
             <input type="text" class="form-control" id="id_birthday" name="birthday" placeholder="YYYY/MM/DD">
           </div>
         </div>
-        <div class="form-group row">
-          <label class="col-form-label col-sm-4" for="id_email">EMAIL</label>
+        <div class="form-group">
+          <label class="control-label col-sm-4" for="id_email">EMAIL</label>
           <div class="col-sm-8">
             <input type="text" class="form-control" id="id_email" name="email" size="64" maxlength="64" placeholder="emailチェック">
           </div>
         </div>
-        <div class="form-group row">
-          <label class="col-form-label col-sm-4" for="id_comment">コメント</label>
+        <div class="form-group">
+          <label class="control-label col-sm-4" for="id_comment">コメント</label>
           <div class="col-sm-8">
             <textarea class="form-control" id="id_comment" name="comment" rows="4" cols="60" placeholder="最大16文字"></textarea>
           </div>
@@ -82,8 +81,8 @@
       </fieldset>
       <div class="form-actions" style="text-align: center">
         <input type="submit" class="btn btn-primary" value="登録">
-        <button type="button" id="clear_error" class="btn btn-secondary">エラークリア</button>
-        <button type="button" id="destroy" class="btn btn-warning">Validate解除</button>
+        <button type="button" id="clear_error" class="btn btn-default">エラークリア</button>
+        <button type="button" id="destroy" class="btn btn-default">Validate解除</button>
       </div>
     </form>
     <a href="index.html">一覧へ</a>
