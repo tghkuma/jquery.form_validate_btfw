@@ -1,7 +1,7 @@
 # JQuery Form Validate(Bootstrap4/Bootstrap3/TwitterBootstrap2.x)
 
 ## 解説
-このプログラムは、Bootstrap3形式のフォーム値のValidateを行う。
+このプログラムは、Bootstrap形式のフォーム値のValidateを行う。
 
 ## 書式
 
