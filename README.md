@@ -205,6 +205,10 @@ Alert,独自エラー表示では対応可能。
 
 「[compress.sh](compress.sh)」を参照
 
+### CDN
+
+https://cdn.jsdelivr.net/gh/tghkuma/jquery.form_validate_btfw@1.7.x/js/jquery.btfw.form_validate.min.js
+
 ## Copyright
 
 Copyright &copy; 2014-2020 [Team-Grasshopper Co., Ltd.](https://team-grasshopper.info/)
