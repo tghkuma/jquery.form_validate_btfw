@@ -5,434 +5,446 @@
  * @see https://github.com/tghkuma/jquery.form_validate_btfw
  * @copyright {@link https://team-grasshopper.info/ Team-Grasshopper}
  */
-/** @external "jQuery.fn" */
-/** @external jQuery */
+/**
+ * @class
+ * @name jQuery
+ * @namespace jQuery
+ * @exports_ $ as jQuery
+ */
 (function ($, window) {
   'use strict';
 
+  /** @default */
   const pluginName = 'formValidate',
     pluginSettings = pluginName + '.settings';
 
   /**
-   * @function external:"jQuery.fn".formValidate
-   * @param {object} method
-   * @return {object} jQuery object
+   * @function
+   * @param {Object} method
+   * @return {Object} jQuery object
    */
   $.fn[pluginName] = function (method) {
-    let settings,
-      methods = {
-        /**
-         * 初期化処理
-         * @param {object} options オプション
-         * @returns {*}
-         */
-        init: function (options) {
-          settings = $.extend({}, $.fn[pluginName].defaults, options);
-          return this.each(function () {
-            const $element = $(this);
-            $element.data(pluginSettings, settings);
-            // イベント登録処理
-            const event_names = ['submit'];
-            $.each(event_names, function () {
-              const func = settings[this];
-              if (typeof func === 'string') {
-                $element.on(this + '.' + pluginName, function () {
-                  return $element[pluginName](func);
-                });
-              } else if ($.isFunction(func)) {
-                $element.on(this + '.' + pluginName, func);
-              }
-            });
+    let settings;
+    const methods = {
+      /**
+       * 初期化処理
+       * @param {Object} options オプション
+       * @returns {*}
+       */
+      init: function (options) {
+        settings = $.extend({}, $.fn[pluginName].defaults, options);
+        return this.each(function () {
+          const $element = $(this);
+          $element.data(pluginSettings, settings);
+          // イベント登録処理
+          const event_names = ['submit'];
+          $.each(event_names, function () {
+            const func = settings[this];
+            if (typeof func === 'string') {
+              $element.on(this + '.' + pluginName, function () {
+                return $element[pluginName](func);
+              });
+            } else if ($.isFunction(func)) {
+              $element.on(this + '.' + pluginName, func);
+            }
           });
-        },
-        /**
-         *
-         * @returns {*}
-         */
-        destroy: function () {
-          return this.each(function () {
-            const $element = $(this);
-            // イベント削除処理
-            const event_names = ['submit'];
-            $.each(event_names, function () {
-              $element.off(this + '.' + pluginName);
-            });
+        });
+      },
+      /**
+       *
+       * @returns {*}
+       */
+      destroy: function () {
+        return this.each(function () {
+          const $element = $(this);
+          // イベント削除処理
+          const event_names = ['submit'];
+          $.each(event_names, function () {
+            $element.off(this + '.' + pluginName);
           });
-        },
-        /**
-         * エラー表示処理
-         * @param {string[]} arrErrors エラー一覧
-         */
-        dispError: function (arrErrors) {
-          const settings = $(this).data(pluginSettings);
-          const self = this;
-          $.each(arrErrors, function (i, eroor) {
-            methods.setError.apply(self, [eroor.name, eroor.message]);
-          });
-          if (0 < arrErrors.length && settings.focusError) {
+        });
+      },
+      /**
+       * エラー表示処理
+       * @param {string[]} arrErrors エラー一覧
+       */
+      dispError: function (arrErrors) {
+        const settings = $(this).data(pluginSettings);
+        const self = this;
+        $.each(arrErrors, function (i, eroor) {
+          methods.setError.apply(self, [eroor.name, eroor.message]);
+        });
+        if (0 < arrErrors.length && settings.focusError) {
+          // 最初のエラーにフォーカス
+          methods.focusError.apply(this, [arrErrors[0].name]);
+        }
+      },
+
+      /**
+       * 指定のエラーにフォーカス
+       * @param {string} name
+       */
+      focusError: function (name) {
+        const settings = $(this).data(pluginSettings);
+        const field = $(this).find("*[name='" + name + "']");
+        let p = 0;
+        if (field.length !== 0) {
+          $(field).focus();
+          p = $(field).offset().top - $(window).innerHeight() / 2;
+          if (p < 0) {
+            p = 0;
+          }
+        } else {
+          console.warn(helpers.format(settings.messages.NOT_EXISTS_FIELD, name));
+        }
+        if ($.fn.animate !== undefined) {
+          $('html,body').animate({scrollTop: p}, settings.focusErrorSpeed);
+        } else {
+          $('html,body').scrollTop(p);
+        }
+      },
+
+      /**
+       * エラークリア処理
+       * @param {string} name 項目名(未指定時全て)
+       */
+      clearError: function (name) {
+        const settings = $(this).data(pluginSettings);
+        if ($.isFunction(settings.clearError)) {
+          settings.clearError.apply(this, [name]);
+        } else if (settings.errorType === 'bs3') {
+          methods.clearErrorBootstrap3.apply(this, [name]);
+        } else if (settings.errorType === 'tb2') {
+          methods.clearErrorTb2.apply(this, [name]);
+        } else {
+          methods.clearErrorBootstrap.apply(this, [name]);
+        }
+        return this;
+      },
+
+      /**
+       * 指定箇所エラー表示処理
+       * @param {string} name 項目名
+       * @param {string} message エラー文言
+       */
+      setError: function (name, message) {
+        const settings = $(this).data(pluginSettings);
+        if ($.isFunction(settings.setError)) {
+          settings.setError.apply(this, [name, message]);
+        } else if (settings.errorType === 'bs3') {
+          methods.setErrorBootstrap3.apply(this, [name, message]);
+        } else if (settings.errorType === 'tb2') {
+          methods.setErrorTb2.apply(this, [name, message]);
+        } else {
+          methods.setErrorBootstrap.apply(this, [name, message]);
+        }
+        return this;
+      },
+
+      /**
+       * エラークリア処理
+       * (Bootstrap4レイアウト)
+       * @param {string} name 項目名(未指定時全て)
+       */
+      clearErrorBootstrap: function (name) {
+        if (name) {
+          const field = $(this).find("*[name='" + name + "']");
+          $(field).removeClass('is-invalid')
+            .nextAll('.invalid-feedback').remove();
+        } else {
+          $(this).find('.is-invalid')
+            .removeClass('is-invalid')
+            .nextAll('.invalid-feedback').remove();
+        }
+        return this;
+      },
+
+      /**
+       * 指定箇所エラー表示処理
+       * (Bootstrap4レイアウト)
+       * @param {string} name 項目名
+       * @param {string} message エラー文言
+       */
+      setErrorBootstrap: function (name, message) {
+        const field = $(this).find("*[name='" + name + "']");
+        const error_message = '<div class="invalid-feedback">' + message + '</div>';
+
+        if (['radio', 'checkbox'].indexOf(field.attr('type')) === -1) {
+          $(field).addClass('is-invalid');
+          if (!$(field).parent().hasClass('input-group')) {
+            $(field).filter(':last').after(error_message);
+          } else {
+            $(field).parent().append(error_message);
+          }
+        } else {
+          const form_check = $(field).closest('.form-check').addClass('is-invalid');
+          $(form_check).filter(':last').after(error_message);
+        }
+        return this;
+      },
+
+      /**
+       * エラークリア処理
+       * (Bootstrap3レイアウト)
+       * @param {string} name 項目名(未指定時全て)
+       */
+      clearErrorBootstrap3: function (name) {
+        if (name) {
+          const field = $(this).find("*[name='" + name + "']");
+          $(field).closest('.form-group')
+            .removeClass('has-error')
+            .find('.error_message').remove();
+        } else {
+          $(this).find('.form-group')
+            .removeClass('has-error')
+            .find('.error_message').remove();
+        }
+        return this;
+      },
+
+      /**
+       * 指定箇所エラー表示処理
+       * (Bootstrap3レイアウト)
+       * @param {string} name 項目名
+       * @param {string} message エラー文言
+       */
+      setErrorBootstrap3: function (name, message) {
+        const field = $(this).find("*[name='" + name + "']");
+        const error_message = '<span class="help-block error_message">' + message + '</span>';
+        $(field).closest('.form-group').addClass('has-error');
+        if (['radio', 'checkbox'].indexOf(field.attr('type')) === -1) {
+          const input_group = $(field).closest('.input-group');
+          if ($(input_group).length !== 0) {
+            $(input_group).after(error_message);
+          } else {
+            $(field).filter(':last').after(error_message);
+          }
+        } else {
+          $(field).filter(':last').parent().after(error_message);
+        }
+        return this;
+      },
+
+      /**
+       * エラークリア処理
+       * (TwitterBootstrap2.xレイアウト)
+       * @param {string} name 項目名(未指定時全て)
+       */
+      clearErrorTb2: function (name) {
+        if (name) {
+          const field = $(this).find("*[name='" + name + "']");
+          $(field).closest('.control-group')
+            .removeClass('error')
+            .find('.error_message').remove();
+        } else {
+          $(this).find('.control-group')
+            .removeClass('error')
+            .find('.error_message').remove();
+        }
+        return this;
+      },
+
+      /**
+       * 指定箇所エラー表示処理
+       * (TwitterBootstrap2.xレイアウト)
+       * @param {string} name 項目名
+       * @param {string} message エラー文言
+       */
+      setErrorTb2: function (name, message) {
+        const field = $(this).find("*[name='" + name + "']");
+        $(field).closest('.control-group').addClass('error');
+        $(field).closest('.controls').append('<div class="help-block error_message">' + message + '</div>');
+        return this;
+      },
+
+      /**
+       * パラメータチェック
+       * @param {Object} options オプション
+       */
+      validate: function (options) {
+        settings = $.extend($(this).data(pluginSettings), options);
+
+        methods.clearError.apply(this);
+        let result = true;
+        const arrErrors = methods.getValidateResult.apply(this, [settings]);
+        if (0 < arrErrors.length) {
+          methods.dispError.apply(this, [arrErrors]);
+          result = false;
+        }
+        if ($.isFunction(settings.result)) {
+          result = settings.result.apply(this, [result, arrErrors]);
+        }
+        return result;
+      },
+
+      /**
+       * パラメータチェック
+       * (エラー時アラート)
+       * @param {Object} options オプション
+       * @returns {boolean|string[]} エラー値
+       */
+      validate_alert: function (options) {
+        settings = $.extend($(this).data(pluginSettings), options);
+
+        let result = true;
+        const arrErrors = methods.getValidateResult.apply(this, [settings]);
+        if (0 < arrErrors.length) {
+          alert(settings.messages.VALIDATE_ERROR + '\n' + helpers.join(arrErrors));
+          if (settings.focusError) {
             // 最初のエラーにフォーカス
             methods.focusError.apply(this, [arrErrors[0].name]);
           }
-        },
+          result = false;
+        }
+        if ($.isFunction(settings.result)) {
+          result = settings.result.apply(this, [result, arrErrors]);
+        }
+        return result;
+      },
 
-        /**
-         * 指定のエラーにフォーカス
-         * @param {string} name
-         */
-        focusError: function (name) {
-          const settings = $(this).data(pluginSettings);
-          const field = $(this).find("*[name='" + name + "']");
-          let p = 0;
-          if (field.length !== 0) {
-            $(field).focus();
-            p = $(field).offset().top - $(window).innerHeight() / 2;
-            if (p < 0) {
-              p = 0;
-            }
-          } else {
-            console.warn(helpers.format(settings.messages.NOT_EXISTS_FIELD, name));
-          }
-          if ($.fn.animate !== undefined) {
-            $('html,body').animate({scrollTop: p}, settings.focusErrorSpeed);
-          } else {
-            $('html,body').scrollTop(p);
-          }
-        },
+      /**
+       * パラメータチェック結果取得
+       * @param {Object} options
+       * @returns {boolean|string[]} エラー値
+       */
+      getValidateResult: function (options) {
+        const form = this;
+        settings = $.extend($(this).data(pluginSettings), options);
 
-        /**
-         * エラークリア処理
-         * @param {string} name 項目名(未指定時全て)
-         */
-        clearError: function (name) {
-          const settings = $(this).data(pluginSettings);
-          if ($.isFunction(settings.clearError)) {
-            settings.clearError.apply(this, [name]);
-          } else if (settings.errorType === 'bs3') {
-            methods.clearErrorBootstrap3.apply(this, [name]);
-          } else if (settings.errorType === 'tb2') {
-            methods.clearErrorTb2.apply(this, [name]);
-          } else {
-            methods.clearErrorBootstrap.apply(this, [name]);
-          }
-          return this;
-        },
+        let arrErrors = [];
+        const fields = settings.fields;
 
-        /**
-         * 指定箇所エラー表示処理
-         * @param {string} name 項目名
-         * @param {string} message エラー文言
-         */
-        setError: function (name, message) {
-          const settings = $(this).data(pluginSettings);
-          if ($.isFunction(settings.setError)) {
-            settings.setError.apply(this, [name, message]);
-          } else if (settings.errorType === 'bs3') {
-            methods.setErrorBootstrap3.apply(this, [name, message]);
-          } else if (settings.errorType === 'tb2') {
-            methods.setErrorTb2.apply(this, [name, message]);
-          } else {
-            methods.setErrorBootstrap.apply(this, [name, message]);
-          }
-          return this;
-        },
-
-        /**
-         * エラークリア処理
-         * (Bootstrap4レイアウト)
-         * @param {string} name 項目名(未指定時全て)
-         */
-        clearErrorBootstrap: function (name) {
-          if (name) {
-            const field = $(this).find("*[name='" + name + "']");
-            $(field).removeClass('is-invalid')
-              .nextAll('.invalid-feedback').remove();
-          } else {
-            $(this).find('.is-invalid')
-              .removeClass('is-invalid')
-              .nextAll('.invalid-feedback').remove();
-          }
-          return this;
-        },
-
-        /**
-         * 指定箇所エラー表示処理
-         * (Bootstrap4レイアウト)
-         * @param {string} name 項目名
-         * @param {string} message エラー文言
-         */
-        setErrorBootstrap: function (name, message) {
-          const field = $(this).find("*[name='" + name + "']");
-          const error_message = '<div class="invalid-feedback">' + message + '</div>';
-
-          if (['radio', 'checkbox'].indexOf(field.attr('type')) === -1) {
-            $(field).addClass('is-invalid');
-            if (!$(field).parent().hasClass('input-group')) {
-              $(field).filter(':last').after(error_message);
-            } else {
-              $(field).parent().append(error_message);
-            }
-          } else {
-            const form_check = $(field).closest('.form-check').addClass('is-invalid');
-            $(form_check).filter(':last').after(error_message);
-          }
-          return this;
-        },
-
-        /**
-         * エラークリア処理
-         * (Bootstrap3レイアウト)
-         * @param {string} name 項目名(未指定時全て)
-         */
-        clearErrorBootstrap3: function (name) {
-          if (name) {
-            const field = $(this).find("*[name='" + name + "']");
-            $(field).closest('.form-group')
-              .removeClass('has-error')
-              .find('.error_message').remove();
-          } else {
-            $(this).find('.form-group')
-              .removeClass('has-error')
-              .find('.error_message').remove();
-          }
-          return this;
-        },
-
-        /**
-         * 指定箇所エラー表示処理
-         * (Bootstrap3レイアウト)
-         * @param {string} name 項目名
-         * @param {string} message エラー文言
-         */
-        setErrorBootstrap3: function (name, message) {
-          const field = $(this).find("*[name='" + name + "']");
-          const error_message = '<span class="help-block error_message">' + message + '</span>';
-          $(field).closest('.form-group').addClass('has-error');
-          if (['radio', 'checkbox'].indexOf(field.attr('type')) === -1) {
-            const input_group = $(field).closest('.input-group');
-            if ($(input_group).length !== 0) {
-              $(input_group).after(error_message);
-            } else {
-              $(field).filter(':last').after(error_message);
-            }
-          } else {
-            $(field).filter(':last').parent().after(error_message);
-          }
-          return this;
-        },
-
-        /**
-         * エラークリア処理
-         * (TwitterBootstrap2.xレイアウト)
-         * @param {string} name 項目名(未指定時全て)
-         */
-        clearErrorTb2: function (name) {
-          if (name) {
-            const field = $(this).find("*[name='" + name + "']");
-            $(field).closest('.control-group')
-              .removeClass('error')
-              .find('.error_message').remove();
-          } else {
-            $(this).find('.control-group')
-              .removeClass('error')
-              .find('.error_message').remove();
-          }
-          return this;
-        },
-
-        /**
-         * 指定箇所エラー表示処理
-         * (TwitterBootstrap2.xレイアウト)
-         * @param {string} name 項目名
-         * @param {string} message エラー文言
-         */
-        setErrorTb2: function (name, message) {
-          const field = $(this).find("*[name='" + name + "']");
-          $(field).closest('.control-group').addClass('error');
-          $(field).closest('.controls').append('<div class="help-block error_message">' + message + '</div>');
-          return this;
-        },
-
-        /**
-         * パラメータチェック
-         * @param {object} options オプション
-         */
-        validate: function (options) {
-          settings = $.extend($(this).data(pluginSettings), options);
-
-          methods.clearError.apply(this);
-          let result = true;
-          const arrErrors = methods.getValidateResult.apply(this, [settings]);
-          if (0 < arrErrors.length) {
-            methods.dispError.apply(this, [arrErrors]);
-            result = false;
-          }
-          if ($.isFunction(settings.result)) {
-            result = settings.result.apply(this, [result, arrErrors]);
-          }
-          return result;
-        },
-
-        /**
-         * パラメータチェック
-         * (エラー時アラート)
-         * @param {object} options オプション
-         * @returns {boolean|string[]} エラー値
-         */
-        validate_alert: function (options) {
-          settings = $.extend($(this).data(pluginSettings), options);
-
-          let result = true;
-          const arrErrors = methods.getValidateResult.apply(this, [settings]);
-          if (0 < arrErrors.length) {
-            alert(settings.messages.VALIDATE_ERROR + '\n' + helpers.join(arrErrors));
-            if (settings.focusError) {
-              // 最初のエラーにフォーカス
-              methods.focusError.apply(this, [arrErrors[0].name]);
-            }
-            result = false;
-          }
-          if ($.isFunction(settings.result)) {
-            result = settings.result.apply(this, [result, arrErrors]);
-          }
-          return result;
-        },
-
-        /**
-         * パラメータチェック結果取得
-         * @param {object} options
-         * @returns {boolean|string[]} エラー値
-         */
-        getValidateResult: function (options) {
-          const form = this;
-          settings = $.extend($(this).data(pluginSettings), options);
-
-          let arrErrors = [];
-          const fields = settings.fields;
-
-          if (!$.isArray(fields)) {
-            return arrErrors;
-          }
-
-          $.each(fields, function (i, field) {
-            if (!field.rules) {
-              return true;
-            }
-
-            // パラメータチェック方法
-            let arrRules = field.rules;
-            if (!$.isArray(arrRules)) {
-              arrRules = [arrRules];
-            }
-            // パラメータ値
-            const $objVal = $(form).find("*[name='" + field.name + "']");
-            // 値存在チェック
-            const bValueExists = helpers.existsValue($objVal);
-
-            // 各パラメータのチェック処理
-            $.each(arrRules, function (i, rule) {
-              let arrRuleErrors = [];
-              let errors;
-              let params;
-
-              //------------------
-              // ルール分岐
-              //------------------
-              // ルールが配列
-              // [ 'ルール名', [<パラメータ配列>]]
-              // [ 'ルール名', <パラメータ1>, <パラメータ2>..., <パラメータn> ]
-              if ($.isArray(rule)) {
-                if (rule.length === 0) {
-                  return;
-                } else if (rule.length === 2) {
-                  params = rule[1];
-                  if (!$.isArray(params)) {
-                    params = [params];
-                  }
-                } else if (rule.length >= 3) {
-                  params = rule.slice(1);
-                }
-                rule = rule[0];
-              }
-              // ルールがObject
-              // { rule:'ルール名', params:[<パラメータ配列>]}
-              else if (typeof rule === 'object') {
-                if (!rule.rule) {
-                  return;
-                }
-                if (rule.params) {
-                  params = rule.params;
-                  if (!$.isArray(params)) {
-                    params = [params];
-                  }
-                }
-                rule = rule.rule;
-              }
-              // ルールが文字列(旧仕様)
-              else if (typeof rule === 'string') {
-                // パラメータ解析処理
-                params = rule.split(':', 2);
-                if (params[0]) {
-                  rule = params[0];
-                }
-                if (params[1]) {
-                  try {
-                    params = JSON.parse(params[1]);
-                  } catch (e) {
-                    params = params[1].split(',');
-                  }
-                  if (!$.isArray(params)) {
-                    params = [params];
-                  }
-                } else {
-                  params = [];
-                }
-              }
-
-              // 独自チェック関数
-              if ($.isFunction(rule)) {
-                errors = rule.apply(form, [field, $objVal, params, settings]);
-                helpers.pushErrors(arrRuleErrors, field, errors);
-              } else if (typeof rule === 'string') {
-                // 指定フィールドに値が入っているとき
-                if (bValueExists) {
-                  if (validateExistsMethods[rule]) {
-                    errors = validateExistsMethods[rule].apply(form, [field, $objVal, params, settings]);
-                    helpers.pushErrors(arrRuleErrors, field, errors);
-                  } else {
-                    //$.error( 'validateExistsMethod "' +  rule + '" does not exist in '+pluginName+' plugin!');
-                  }
-                }
-                // 指定フィールドに値が入っていないとき
-                else {
-                  // 必須項目チェック
-                  if (rule === 'required') {
-                    helpers.pushErrors(arrRuleErrors, field, settings.messages.REQUIRED);
-                  } else if (rule === 'checkbox') {
-                    errors = validateExistsMethods[rule].apply(form, [field, $objVal, params, settings]);
-                    helpers.pushErrors(arrRuleErrors, field, errors);
-                  } else if (validateMethods[rule]) {
-                    errors = validateMethods[rule].apply(form, [field, $objVal, params, settings]);
-                    helpers.pushErrors(arrRuleErrors, field, errors);
-                  } else {
-                    //$.error( 'validateMethods "' +  rule + '" does not exist in '+pluginName+' plugin!');
-                  }
-                }
-              }
-
-              // エラー時追加
-              if (arrRuleErrors && 0 < arrRuleErrors.length) {
-                arrErrors = arrErrors.concat(arrRuleErrors);
-              }
-            });
-            return true;
-          });
+        if (!$.isArray(fields)) {
           return arrErrors;
         }
-      };
 
+        $.each(fields, function (i, field) {
+          if (!field.rules) {
+            return true;
+          }
+
+          // パラメータチェック方法
+          let arrRules = field.rules;
+          if (!$.isArray(arrRules)) {
+            arrRules = [arrRules];
+          }
+          // パラメータ値
+          const $objVal = $(form).find("*[name='" + field.name + "']");
+          // 値存在チェック
+          const bValueExists = helpers.existsValue($objVal);
+
+          // 各パラメータのチェック処理
+          $.each(arrRules, function (i, rule) {
+            let arrRuleErrors = [];
+            let errors;
+            let params;
+
+            //------------------
+            // ルール分岐
+            //------------------
+            // ルールが配列
+            // [ 'ルール名', [<パラメータ配列>]]
+            // [ 'ルール名', <パラメータ1>, <パラメータ2>..., <パラメータn> ]
+            if ($.isArray(rule)) {
+              if (rule.length === 0) {
+                return;
+              } else if (rule.length === 2) {
+                params = rule[1];
+                if (!$.isArray(params)) {
+                  params = [params];
+                }
+              } else if (rule.length >= 3) {
+                params = rule.slice(1);
+              }
+              rule = rule[0];
+            }
+              // ルールがObject
+            // { rule:'ルール名', params:[<パラメータ配列>]}
+            else if (typeof rule === 'object') {
+              if (!rule.rule) {
+                return;
+              }
+              if (rule.params) {
+                params = rule.params;
+                if (!$.isArray(params)) {
+                  params = [params];
+                }
+              }
+              rule = rule.rule;
+            }
+            // ルールが文字列(旧仕様)
+            else if (typeof rule === 'string') {
+              // パラメータ解析処理
+              params = rule.split(':', 2);
+              if (params[0]) {
+                rule = params[0];
+              }
+              if (params[1]) {
+                try {
+                  params = JSON.parse(params[1]);
+                } catch (e) {
+                  params = params[1].split(',');
+                }
+                if (!$.isArray(params)) {
+                  params = [params];
+                }
+              } else {
+                params = [];
+              }
+            }
+
+            // 独自チェック関数
+            if ($.isFunction(rule)) {
+              errors = rule.apply(form, [field, $objVal, params, settings]);
+              helpers.pushErrors(arrRuleErrors, field, errors);
+            } else if (typeof rule === 'string') {
+              // 指定フィールドに値が入っているとき
+              if (bValueExists) {
+                if (validateExistsMethods[rule]) {
+                  errors = validateExistsMethods[rule].apply(form, [field, $objVal, params, settings]);
+                  helpers.pushErrors(arrRuleErrors, field, errors);
+                } else {
+                  //$.error( 'validateExistsMethod "' +  rule + '" does not exist in '+pluginName+' plugin!');
+                }
+              }
+              // 指定フィールドに値が入っていないとき
+              else {
+                // 必須項目チェック
+                if (rule === 'required') {
+                  helpers.pushErrors(arrRuleErrors, field, settings.messages.REQUIRED);
+                } else if (rule === 'checkbox') {
+                  errors = validateExistsMethods[rule].apply(form, [field, $objVal, params, settings]);
+                  helpers.pushErrors(arrRuleErrors, field, errors);
+                } else if (validateMethods[rule]) {
+                  errors = validateMethods[rule].apply(form, [field, $objVal, params, settings]);
+                  helpers.pushErrors(arrRuleErrors, field, errors);
+                } else {
+                  //$.error( 'validateMethods "' +  rule + '" does not exist in '+pluginName+' plugin!');
+                }
+              }
+            }
+
+            // エラー時追加
+            if (arrRuleErrors && 0 < arrRuleErrors.length) {
+              arrErrors = arrErrors.concat(arrRuleErrors);
+            }
+          });
+          return true;
+        });
+        return arrErrors;
+      }
+    };
+
+    /**
+     * バリデート処理群
+     * @class
+     */
     const validateMethods = {
       /**
        * 数値チェック(値なし)
+       * @param {string} field フィールド名
+       * @param {jQuery} objVal 値オブジェクト
+       * @returns {string|null} エラーメッセージ(正常時null)
        */
       numeric: function (field, objVal) {
         // type="number"時の仮対策
@@ -443,6 +455,10 @@
       },
       /**
        * 数値チェック(値なし,エイリアス)
+       * @alias validateMethods.numeric
+       * @param {string} field フィールド名
+       * @param {jQuery} objVal 値オブジェクト
+       * @returns {string|null} エラーメッセージ(正常時null)
        */
       number: function (field, objVal) {
         return validateMethods.numeric.apply(this, [field, objVal]);
@@ -451,6 +467,11 @@
       /**
        * 郵便番号の4桁部分が入力された場合
        * 3桁部が入力必須になるチェック
+       * @param {string} field フィールド名
+       * @param {jQuery} objVal 値オブジェクト
+       * @param {any[]} params ルールパラメータ
+       * @param {Object} settings 設定情報
+       * @returns {string|null} エラーメッセージ(正常時null)
        */
       zip_ex: function (field, objVal, params, settings) {
         const zip_after = $(this).find("*[name='" + field.name + settings.zip_suffix + "']");
@@ -462,9 +483,10 @@
       /**
        * 年月日チェック
        * フォーム name+"_y", name+"_m", name+"_d"のチェックを行う
-       * @param field
-       * @param {jQuery} objVal
-       * @param params
+       * @param {string} field フィールド名
+       * @param {jQuery} objVal 値オブジェクト
+       * @param {any[]} params ルールパラメータ
+       * @param {string} params.0 "required":必須チェック
        * @returns {string[]} エラー一覧(正常時空配列)
        */
       ymd: function (field, objVal, params) {
@@ -533,16 +555,14 @@
 
     /**
      * パラメータチェック群
-     *
-     * @param field パラメータ名
-     * @param rule チェックコマンド
-     * @param objVal 値オブジェクト
-     *
-     * @return	string|null エラーメッセージ 文字列 or 配列
+     * @class
      */
     const validateExistsMethods = {
       /**
        * 確認項目
+       * @param {string} field フィールド名
+       * @param {jQuery} objVal 値オブジェクト
+       * @returns {string|null} エラーメッセージ(正常時null)
        */
       confirm: function (field, objVal) {
         const confirmVal = $(this).find("*[name='" + field.name + settings.confirm_suffix + "']");
@@ -552,6 +572,9 @@
       },
       /**
        * E-Mailチェック
+       * @param {string} field フィールド名
+       * @param {jQuery} objVal 値オブジェクト
+       * @returns {string|null} エラーメッセージ(正常時null)
        */
       email: function (field, objVal) {
         const val = helpers.getValue(objVal);
@@ -565,6 +588,9 @@
       },
       /**
        * 全角
+       * @param {string} field フィールド名
+       * @param {jQuery} objVal 値オブジェクト
+       * @returns {string|null} エラーメッセージ(正常時null)
        */
       zenkaku: function (field, objVal) {
         if (!helpers._isZenkaku(helpers.getValue(objVal))) {
@@ -574,6 +600,9 @@
       },
       /**
        * 半角
+       * @param {string} field フィールド名
+       * @param {jQuery} objVal 値オブジェクト
+       * @returns {string|null} エラーメッセージ(正常時null)
        */
       hankaku: function (field, objVal) {
         if (!helpers._isHankaku(helpers.getValue(objVal))) {
@@ -583,6 +612,9 @@
       },
       /**
        * 全角カタカナ
+       * @param {string} field フィールド名
+       * @param {jQuery} objVal 値オブジェクト
+       * @returns {string|null} エラーメッセージ(正常時null)
        */
       zen_katakana: function (field, objVal) {
         if (!helpers._isAllkana(helpers.getValue(objVal))) {
@@ -592,6 +624,9 @@
       },
       /**
        * 全角ひらがな
+       * @param {string} field フィールド名
+       * @param {jQuery} objVal 値オブジェクト
+       * @returns {string|null} エラーメッセージ(正常時null)
        */
       hiragana: function (field, objVal) {
         if (!helpers._isAllHiragana(helpers.getValue(objVal))) {
@@ -601,6 +636,9 @@
       },
       /**
        * 電話番号
+       * @param {string} field フィールド名
+       * @param {jQuery} objVal 値オブジェクト
+       * @returns {string|null} エラーメッセージ(正常時null)
        */
       tel: function (field, objVal) {
         if (!helpers._isTel(helpers.getValue(objVal))) {
@@ -610,6 +648,11 @@
       },
       /**
        * 最小文字数
+       * @param {string} field フィールド名
+       * @param {jQuery} objVal 値オブジェクト
+       * @param {any[]} params ルールパラメータ
+       * @param {string} params.0 最小文字数
+       * @returns {string|null} エラーメッセージ(正常時null)
        */
       minlength: function (field, objVal, params) {
         const min = Number(params[0]);
@@ -619,6 +662,11 @@
       },
       /**
        * 最大文字数
+       * @param {string} field フィールド名
+       * @param {jQuery} objVal 値オブジェクト
+       * @param {any[]} params ルールパラメータ
+       * @param {string} params.0 最大文字数
+       * @returns {string|null} エラーメッセージ(正常時null)
        */
       maxlength: function (field, objVal, params) {
         const max = Number(params[0]);
@@ -628,6 +676,9 @@
       },
       /**
        * 数値チェック
+       * @param {string} field フィールド名
+       * @param {jQuery} objVal 値オブジェクト
+       * @returns {string|null} エラーメッセージ(正常時null)
        */
       numeric: function (field, objVal) {
         const val = helpers.getValue(objVal);
@@ -638,12 +689,22 @@
       },
       /**
        * 数値チェック(エイリアス)
+       * @alias validateExistsMethods.numeric
+       * @param {string} field フィールド名
+       * @param {jQuery} objVal 値オブジェクト
+       * @returns {string|null} エラーメッセージ(正常時null)
        */
       number: function (field, objVal) {
         return validateExistsMethods.numeric.apply(this, [field, objVal]);
       },
       /**
        * 数値桁数チェック
+       * @param {string} field フィールド名
+       * @param {jQuery} objVal 値オブジェクト
+       * @param {any[]} params ルールパラメータ
+       * @param {string} params.0 最小桁数
+       * @param {string} params.1 最大桁数
+       * @returns {string|null} エラーメッセージ(正常時null)
        */
       numlength: function (field, objVal, params) {
         const val = helpers.getValue(objVal);
@@ -661,6 +722,11 @@
       },
       /**
        * 最小値
+       * @param {string} field フィールド名
+       * @param {jQuery} objVal 値オブジェクト
+       * @param {any[]} params ルールパラメータ
+       * @param {string} params.0 最小値
+       * @returns {string|null} エラーメッセージ(正常時null)
        */
       min: function (field, objVal, params) {
         const val = helpers.getValue(objVal);
@@ -674,6 +740,11 @@
       },
       /**
        * 最大値
+       * @param {string} field フィールド名
+       * @param {jQuery} objVal 値オブジェクト
+       * @param {any[]} params ルールパラメータ
+       * @param {string} params.0 最大値
+       * @returns {string|null} エラーメッセージ(正常時null)
        */
       max: function (field, objVal, params) {
         const val = helpers.getValue(objVal);
@@ -687,6 +758,12 @@
       },
       /**
        * 数値範囲
+       * @param {string} field フィールド名
+       * @param {jQuery} objVal 値オブジェクト
+       * @param {any[]} params ルールパラメータ
+       * @param {string} params.0 最小値
+       * @param {string} params.1 最大値
+       * @returns {string|null} エラーメッセージ(正常時null)
        */
       range: function (field, objVal, params) {
         const val = helpers.getValue(objVal);
@@ -701,6 +778,9 @@
       },
       /**
        * 日付
+       * @param {string} field フィールド名
+       * @param {jQuery} objVal 値オブジェクト
+       * @returns {string|null} エラーメッセージ(正常時null)
        */
       date: function (field, objVal) {
         const val = helpers.getValue(objVal),
@@ -720,6 +800,9 @@
       /**
        * 日時チェック
        * [YYYY-MM-DD hh:mm:ss]または[YYYY/MM/DD]の書式でチェックする
+       * @param {string} field フィールド名
+       * @param {jQuery} objVal 値オブジェクト
+       * @returns {string|null} エラーメッセージ(正常時null)
        */
       datetime: function (field, objVal) {
         const val = helpers.getValue(objVal),
@@ -742,6 +825,9 @@
       /**
        * 日付チェック
        * [YYYY/MM/DD] or [YYYY/MM] or [YYYY]の書式でチェックする
+       * @param {string} field フィールド名
+       * @param {jQuery} objVal 値オブジェクト
+       * @returns {string|null} エラーメッセージ(正常時null)
        */
       date_ex: function (field, objVal) {
         const val = helpers.getValue(objVal),
@@ -764,6 +850,11 @@
       /**
        * 時間チェック
        * [hh:mm:ss]の書式でチェックする
+       * @param {string} field フィールド名
+       * @param {jQuery} objVal 値オブジェクト
+       * @param {any[]} params ルールパラメータ
+       * @param {string} params.0 "hm":[hh:mm]の書式でチェック
+       * @returns {string|null} エラーメッセージ(正常時null)
        */
       time: function (field, objVal, params) {
         const val = helpers.getValue(objVal);
@@ -789,6 +880,9 @@
       },
       /**
        * 郵便番号
+       * @param {string} field フィールド名
+       * @param {jQuery} objVal 値オブジェクト
+       * @returns {string|null} エラーメッセージ(正常時null)
        */
       zip: function (field, objVal) {
         const val = helpers.getValue(objVal),
@@ -800,6 +894,12 @@
       },
       /**
        * チェックボックス
+       * @param {string} field フィールド名
+       * @param {jQuery} objVal 値オブジェクト
+       * @param {any[]} params ルールパラメータ
+       * @param {string} params.0 最小選択数
+       * @param {string} params.1 最大選択数
+       * @returns {string|null} エラーメッセージ(正常時null)
        */
       checkbox: function (field, objVal, params) {
         const check = objVal.filter(":checked").length,
@@ -817,11 +917,12 @@
       /**
        * 正規表現チェック
        * @param {string} field フィールド名
-       * @param {object} objVal 値
-       * @param {string|array} params 正規表現パラメータ
-       *        params[0]:正規表現(文字列 or 正規表現クラス)
-       *        params[1]:正規表現フラグ(オプション)
-       *        params[1 or 2]:エラーメッセージ(オプション)
+       * @param {jQuery} objVal 値オブジェクト
+       * @param {any[]} params 正規表現パラメータ
+       * @param {(string|RegExp)} params.0 正規表現(文字列 or 正規表現クラス)
+       * @param {string} params.1 正規表現フラグ(オプション)
+       * @param {string} params.{1|2} エラーメッセージ(オプション)
+       * @returns {(string|null)} エラーメッセージ(正常時null)
        */
       regexp: function (field, objVal, params) {
         const val = helpers.getValue(objVal);
@@ -846,11 +947,15 @@
       }
     };
 
+    /**
+     * 補助処理群
+     * @class
+     */
     const helpers = {
       /**
        * 値が存在するか？
-       * @param objVal 値Object
-       * @returns true:存在する
+       * @param {jQuery} objVal 値オブジェクト
+       * @returns {boolean} true:存在する
        */
       existsValue: function (objVal) {
         let ret;
@@ -865,8 +970,8 @@
       },
       /**
        * 値を返す
-       * @param objVal 値Object
-       * @returns 値
+       * @param {jQuery} objVal 値オブジェクト
+       * @returns {*} 値
        */
       getValue: function (objVal) {
         const type = objVal.attr('type');
@@ -885,10 +990,10 @@
       },
       /**
        * エラー配列付加
-       * @param {array} arrErrors  エラー情報
-       * @param {object} field    フィールド情報
-       * @param {string|string[]} errors    追加エラー情報
-       * @return  array arrErrors
+       * @param {string[]|object[]} arrErrors エラー情報配列
+       * @param {Object} field    フィールド情報
+       * @param {string|string[]} errors 追加エラー情報
+       * @return {string[]|object[]} array arrErrors
        */
       pushErrors: function (arrErrors, field, errors) {
         if (typeof errors === 'string' && errors) {
@@ -902,8 +1007,8 @@
       },
       /**
        * 半角英数字チェック
-       * @param    _text  文字列
-       * @return  boolean true:OK, false:NG
+       * @param {string} _text  文字列
+       * @return {boolean} true:OK, false:NG
        */
       _isHankaku: function (_text) {
         // 半角以外が存在する場合
@@ -912,8 +1017,8 @@
 
       /**
        * 全角チェック
-       * @param    _text  文字列
-       * @return  boolean true:OK, false:NG
+       * @param {string} _text  文字列
+       * @return {boolean} true:OK, false:NG
        */
       _isZenkaku: function (_text) {
         return !(/[\w\-.]/).test(_text);
@@ -921,8 +1026,8 @@
 
       /**
        * 電話番号チェック
-       * @param  inpText  文字列
-       * @return  boolean true:OK, false:NG
+       * @param {string} inpText  文字列
+       * @return {boolean} true:OK, false:NG
        */
       _isTel: function (inpText) {
         // 「0～9」「-」「(」「)」以外があったらエラー
@@ -931,8 +1036,8 @@
 
       /**
        * 整数チェック
-       * @param  _value 値
-       * @return  boolean true:OK, false:NG
+       * @param {string} _value 値
+       * @return {boolean} true:OK, false:NG
        */
       _isInteger: function (_value) {
         const test = /^(-\d+|\d*)$/.test('' + _value);
@@ -941,10 +1046,10 @@
 
       /**
        * 年月日整合性チェック
-       * @param  _year  年
-       * @param  _month 月
-       * @param  _day 日
-       * @return  boolean true:OK, false:NG
+       * @param {number} _year  年
+       * @param {number} _month 月
+       * @param {number} _day 日
+       * @return {boolean} true:OK, false:NG
        */
       _isDate: function (_year, _month, _day) {
         //==========================
@@ -977,10 +1082,10 @@
 
       /**
        * 時分整合性チェック
-       * @param  _hour  時
-       * @param  _minute  分
-       * @param  _second  秒(null=未チェック)
-       * @return  boolean true:OK, false:NG
+       * @param {number} _hour  時
+       * @param {number} _minute  分
+       * @param {number|null} _second  秒(null=未チェック)
+       * @return {boolean} true:OK, false:NG
        */
       _isTime: function (_hour, _minute, _second) {
         //====================
@@ -1003,8 +1108,8 @@
 
       /**
        * 全角カタカナチェック
-       * @param  _inpText  文字列
-       * @return  boolean true:OK, false:NG
+       * @param {string} _inpText  文字列
+       * @return {boolean} true:OK, false:NG
        */
       _isAllkana: function (_inpText) {
         for (let i = 0; i < _inpText.length; i++) {
@@ -1020,8 +1125,8 @@
 
       /**
        * 全角ひらがなチェック
-       * @param  _inpText  文字列
-       * @return  boolean true:OK, false:NG
+       * @param {string} _inpText  文字列
+       * @return {boolean} true:OK, false:NG
        */
       _isAllHiragana: function (_inpText) {
         for (let i = 0; i < _inpText.length; i++) {
@@ -1036,10 +1141,8 @@
 
       /**
        * EMailチェック
-       * @param  _strEmail  EMAIL
-       * @return  string
-       *      "":エラー無し
-       *      ""以外:エラー
+       * @param {string} _strEmail  EMAIL
+       * @return {string} "":エラー無し, ""以外:エラー
        */
       _isEmailEx: function (_strEmail) {
         const emailPat = /^(.+)@(.+)$/,
@@ -1110,6 +1213,12 @@
         });
         return message;
       },
+      /**
+       * エラーメッセージを返す
+       * @param {string[]|object[]} arrErrors エラー情報配列
+       * @param {string} delimiter デリミタ
+       * @returns {string} エラーメッセージ
+       */
       join: function (arrErrors, delimiter) {
         if (delimiter === undefined) delimiter = '\n';
         let arrErrorMessages = [];
@@ -1117,11 +1226,12 @@
           if (typeof error === 'string' && error) {
             arrErrorMessages.push(error);
           } else {
-            /**
-             *  @namespace error.name フィールド名
-             *  @namespace error.d_name フィールド表示名
-             *  @namespace error.message エラーメッセージ
-             */
+            //-----------------------
+            // エラー情報追加
+            // error.name フィールド名
+            // error.d_name フィールド表示名
+            // error.message エラーメッセージ
+            //-----------------------
             arrErrorMessages.push((error.d_name ? error.d_name : error.name) + ' : ' + error.message);
           }
         });
@@ -1138,8 +1248,8 @@
     }
   };
   /**
-   * デフォルト値
-   * @function external:"jQuery.fn".defaults
+   * デフォルト設定値
+   * @property external:"jQuery.fn".formValidate.defaults
    */
   $.fn[pluginName].defaults = {
     submit: 'validate',
