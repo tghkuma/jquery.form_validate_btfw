@@ -314,8 +314,10 @@
         settings = $.extend($(this).data(pluginSettings), options);
 
         let arrErrors = [];
-        const fields = settings.fields;
+        const fields = settings.fields ||
+            methods.getFieldsRules.apply(this, [settings]);
 
+        // 未サポートパラメータ
         if (!Array.isArray(fields)) {
           return arrErrors;
         }
@@ -434,6 +436,66 @@
           return true;
         });
         return arrErrors;
+      },
+
+      /**
+       * フィールド/ルール情報取得
+       * @returns {Array<Object>}
+       */
+      getFieldsRules: function () {
+        let fields = [];
+        const formElements = $(this).get(0).elements;
+        Array.from(formElements).forEach(function(element) {
+          const name = element.name;
+          if (!name) {
+            return;
+          }
+          const type = element.getAttribute('type');
+          if (type === 'radio' || type === 'checkbox') {
+            if(fields.find(item => item.name === element.name)) {
+              return;
+            }
+          }
+          let rules = [];
+          if (element.required) {
+            rules.push('required');
+          }
+          // 属性によるパターン
+          [['minLength','minlength'],['maxLength','maxlength'],'min','max',['pattern','regexp']].forEach(function (attr) {
+            let rule;
+            if (Array.isArray(attr)) {
+              rule = attr[1];
+              attr = attr[0];
+            }
+            else {
+              rule = attr;
+            }
+            const value = element.getAttribute(attr);
+            if (value !== null) {
+              rules.push([rule, value]);
+            }
+          });
+          // type="xxx"によるバリデート判別
+          let rule;
+          switch (type) {
+            case 'date':
+            case 'email':
+            case 'tel':
+              rule = type;
+              break;
+            case 'number':
+              rule = 'numeric';
+              break;
+            case 'time':
+              rule = ['time','hm'];
+              break;
+          }
+          if (rule) {
+            rules.push(rule);
+          }
+          fields.push({name:name, rules:rules});
+        });
+        return fields;
       }
     };
 
