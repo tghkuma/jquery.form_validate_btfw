@@ -64,6 +64,7 @@ setError|name, message| nameフィールドにmessageエラーを表示
 validate|[オプションオブジェクト]| パラメータチェック<br>戻り値:true=正常, false=エラー
 validate_alert|[オプションオブジェクト]| パラメータチェック<br>エラー時alert()でエラー表示
 getValidateResult|[オプションオブジェクト]|パラメータチェック結果取得<br>戻り値:エラーメッセージ配列
+getFieldsRules|[オプションオブジェクト]|フォーム内フィールドからfieldsとrulesを生成|
 
 ### ルール
 
@@ -86,13 +87,13 @@ checkbox|<最少選択数>[,<最大選択数>]| チェックボックスの選�
 range|<最小値>,<最大値>|数値範囲
 date | _なし_ |日付
 datetime | _なし_ |日時
-time | _なし_ |時間
+time | ['hm'] |時間.<br> `hh:mm:ss` 形式チェック<br>パラメータ `hm` の時は `hh:mm` 形式チェック
 zip | _なし_ |郵便番号
 date_ex | _なし_ |日付.<br>[YYYY/MM/DD] or [YYYY/MM] or [YYYY]の書式でチェックする
 regexp|<正規表現>[,<フラグ>[,<エラーメッセージ>]]| 正規表現は文字列か正規表現リテラル(/<正規表現>/)が指定可.<br><フラグ>,<エラーメッセージ>は省略可<br>正規表現リテラルの場合,第2パラメータは<メッセージ>となる
 <関数>|_関数による_|独自Validate関数を実行する
 zip_ex | _なし_ |(※)郵便番号.<br>nameとname+"\_after"の2か所をチェック
-ymd | _なし_ | (※)年月日.<br>name+"\_Y", name+"\_M", name+"\_D"の３か所をチェック
+ymd | ['required'] | (※)年月日.<br>name+"\_Y", name+"\_M", name+"\_D"の３か所をチェック<br>パラメータ `required` の時は必須チェックも行う。
 
 (※)バリデーション機能はあるが、Bootstrapでのエラー表示ができない。  
 Alert,独自エラー表示では対応可能。
@@ -173,6 +174,29 @@ getValidateResultメソッドの戻り値はエラーメッセージは下記構
                     :
 ];
 ````
+
+## HTML5バリデーション準拠
+
+`fields` を指定しないと、指定フォームの[HTMLFormControlsCollection](https://html.spec.whatwg.org/multipage/common-dom-interfaces.html#htmlformcontrolscollection) と入力フォームのHTML5準拠バリデーションルールから自動生成する。  
+受動で生成する場合、`getFieldsRules` メソッドを使用する。
+
+対応しているバリデーションは下記の通り
+
+属性|ルール,パラメータ | 尾行
+---|---|---
+required|'required'|
+minlength="<最小文字列>"|['minlength',<最小文字列>]|
+maxlength="<最大文字列>"|['maxlength',<最大文字列>|
+min="<最小値>"| ['min', <最小値>|
+max="<最大値>"| ['max', <最大値>]|
+pattern="<正規表現>"|['regexp','<正規表現>']|
+type="number"|'numeric'|
+type="email"|'email'|
+type="tel"|'tel'|
+type="date"|'date'|
+type="time"|['time','hm']|日時属性のみ
+type="radio" required|'required'|最初のフィールドのみ指定可
+type="checkbox" required|'required'|最初のフィールドのみ指定可
 
 ## 制限
 
