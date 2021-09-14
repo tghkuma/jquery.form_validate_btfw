@@ -9,7 +9,7 @@
  * @class
  * @name jQuery
  * @namespace jQuery
- * @exports_ $ as jQuery
+ * @exports $ as jQuery
  */
 (function ($, window) {
   'use strict';
@@ -506,7 +506,7 @@
     const validateMethods = {
       /**
        * 数値チェック(値なし)
-       * @param {string} field フィールド名
+       * @param {object} field フィールド
        * @param {jQuery} objVal 値オブジェクト
        * @returns {string|null} エラーメッセージ(正常時null)
        */
@@ -520,7 +520,7 @@
       /**
        * 数値チェック(値なし,エイリアス)
        * @alias validateMethods.numeric
-       * @param {string} field フィールド名
+       * @param {object} field フィールド
        * @param {jQuery} objVal 値オブジェクト
        * @returns {string|null} エラーメッセージ(正常時null)
        */
@@ -552,7 +552,7 @@
        * @param {string} field.name フィールド物理名
        * @param {jQuery} objVal 値オブジェクト
        * @param {string[]} params ルールパラメータ
-       * @param {string} params.0 "required":必須チェック
+       * @param {string} params[0] "required":必須チェック
        * @returns {string[]} エラー一覧(正常時空配列)
        */
       ymd: function (field, objVal, params) {
@@ -640,7 +640,7 @@
       },
       /**
        * E-Mailチェック
-       * @param {string} field フィールド名
+       * @param {object} field フィールド
        * @param {jQuery} objVal 値オブジェクト
        * @returns {string|null} エラーメッセージ(正常時null)
        */
@@ -656,7 +656,7 @@
       },
       /**
        * 全角
-       * @param {string} field フィールド名
+       * @param {object} field フィールド
        * @param {jQuery} objVal 値オブジェクト
        * @returns {string|null} エラーメッセージ(正常時null)
        */
@@ -668,7 +668,7 @@
       },
       /**
        * 半角
-       * @param {string} field フィールド名
+       * @param {object} field フィールド
        * @param {jQuery} objVal 値オブジェクト
        * @returns {string|null} エラーメッセージ(正常時null)
        */
@@ -680,19 +680,19 @@
       },
       /**
        * 全角カタカナ
-       * @param {string} field フィールド名
+       * @param {object} field フィールド
        * @param {jQuery} objVal 値オブジェクト
        * @returns {string|null} エラーメッセージ(正常時null)
        */
       zen_katakana: function (field, objVal) {
-        if (!helpers._isAllkana(helpers.getValue(objVal))) {
+        if (!helpers._isAllKana(helpers.getValue(objVal))) {
           return settings.messages.ZEN_KANA;
         }
         return null;
       },
       /**
        * 全角ひらがな
-       * @param {string} field フィールド名
+       * @param {object} field フィールド
        * @param {jQuery} objVal 値オブジェクト
        * @returns {string|null} エラーメッセージ(正常時null)
        */
@@ -704,7 +704,7 @@
       },
       /**
        * 電話番号
-       * @param {string} field フィールド名
+       * @param {object} field フィールド
        * @param {jQuery} objVal 値オブジェクト
        * @returns {string|null} エラーメッセージ(正常時null)
        */
@@ -716,10 +716,10 @@
       },
       /**
        * 最小文字数
-       * @param {string} field フィールド名
+       * @param {object} field フィールド
        * @param {jQuery} objVal 値オブジェクト
        * @param {Array<string|number>} params ルールパラメータ
-       * @param {string|number} params.0 最小文字数
+       * @param {string|number} params[0] 最小文字数
        * @returns {string|null} エラーメッセージ(正常時null)
        */
       minlength: function (field, objVal, params) {
@@ -730,10 +730,10 @@
       },
       /**
        * 最大文字数
-       * @param {string} field フィールド名
+       * @param {object} field フィールド
        * @param {jQuery} objVal 値オブジェクト
        * @param {Array<string|number>} params ルールパラメータ
-       * @param {string|number} params.0 最大文字数
+       * @param {string|number} params[0] 最大文字数
        * @returns {string|null} エラーメッセージ(正常時null)
        */
       maxlength: function (field, objVal, params) {
@@ -744,7 +744,7 @@
       },
       /**
        * 数値チェック
-       * @param {string} field フィールド名
+       * @param {object} field フィールド
        * @param {jQuery} objVal 値オブジェクト
        * @returns {string|null} エラーメッセージ(正常時null)
        */
@@ -758,7 +758,7 @@
       /**
        * 数値チェック(エイリアス)
        * @alias validateExistsMethods.numeric
-       * @param {string} field フィールド名
+       * @param {object} field フィールド
        * @param {jQuery} objVal 値オブジェクト
        * @returns {string|null} エラーメッセージ(正常時null)
        */
@@ -767,11 +767,11 @@
       },
       /**
        * 数値桁数チェック
-       * @param {string} field フィールド名
+       * @param {object} field フィールド
        * @param {jQuery} objVal 値オブジェクト
        * @param {Array<string|number>} params ルールパラメータ
-       * @param {string|number} params.0 最小桁数
-       * @param {string|number} params.1 最大桁数
+       * @param {string|number} params[0] 最小桁数
+       * @param {string|number} params[1] 最大桁数
        * @returns {string|null} エラーメッセージ(正常時null)
        */
       numlength: function (field, objVal, params) {
@@ -790,10 +790,10 @@
       },
       /**
        * 最小値
-       * @param {string} field フィールド名
+       * @param {object} field フィールド
        * @param {jQuery} objVal 値オブジェクト
        * @param {Array<string|number>} params ルールパラメータ
-       * @param {string|number} params.0 最小値
+       * @param {string|number} params[0] 最小値
        * @returns {string|null} エラーメッセージ(正常時null)
        */
       min: function (field, objVal, params) {
@@ -808,10 +808,10 @@
       },
       /**
        * 最大値
-       * @param {string} field フィールド名
+       * @param {object} field フィールド
        * @param {jQuery} objVal 値オブジェクト
        * @param {Array<string|number>} params ルールパラメータ
-       * @param {string|number} params.0 最大値
+       * @param {string|number} params[0] 最大値
        * @returns {string|null} エラーメッセージ(正常時null)
        */
       max: function (field, objVal, params) {
@@ -826,11 +826,11 @@
       },
       /**
        * 数値範囲
-       * @param {string} field フィールド名
+       * @param {object} field フィールド
        * @param {jQuery} objVal 値オブジェクト
        * @param {Array<string|number>} params ルールパラメータ
-       * @param {string|number} params.0 最小値
-       * @param {string|number} params.1 最大値
+       * @param {string|number} params[0] 最小値
+       * @param {string|number} params[1] 最大値
        * @returns {string|null} エラーメッセージ(正常時null)
        */
       range: function (field, objVal, params) {
@@ -846,7 +846,7 @@
       },
       /**
        * 日付
-       * @param {string} field フィールド名
+       * @param {object} field フィールド
        * @param {jQuery} objVal 値オブジェクト
        * @returns {string|null} エラーメッセージ(正常時null)
        */
@@ -868,7 +868,7 @@
       /**
        * 日時チェック
        * [YYYY-MM-DD hh:mm:ss]または[YYYY/MM/DD]の書式でチェックする
-       * @param {string} field フィールド名
+       * @param {object} field フィールド
        * @param {jQuery} objVal 値オブジェクト
        * @returns {string|null} エラーメッセージ(正常時null)
        */
@@ -893,7 +893,7 @@
       /**
        * 日付チェック
        * [YYYY/MM/DD] or [YYYY/MM] or [YYYY]の書式でチェックする
-       * @param {string} field フィールド名
+       * @param {object} field フィールド
        * @param {jQuery} objVal 値オブジェクト
        * @returns {string|null} エラーメッセージ(正常時null)
        */
@@ -918,10 +918,10 @@
       /**
        * 時間チェック
        * [hh:mm:ss]の書式でチェックする
-       * @param {string} field フィールド名
+       * @param {object} field フィールド
        * @param {jQuery} objVal 値オブジェクト
        * @param {string[]} params ルールパラメータ
-       * @param {string} params.0 "hm":[hh:mm]の書式でチェック
+       * @param {string} params[0] "hm":[hh:mm]の書式でチェック
        * @returns {string|null} エラーメッセージ(正常時null)
        */
       time: function (field, objVal, params) {
@@ -948,7 +948,7 @@
       },
       /**
        * 郵便番号
-       * @param {string} field フィールド名
+       * @param {object} field フィールド
        * @param {jQuery} objVal 値オブジェクト
        * @returns {string|null} エラーメッセージ(正常時null)
        */
@@ -962,15 +962,15 @@
       },
       /**
        * チェックボックス
-       * @param {string} field フィールド名
+       * @param {object} field フィールド
        * @param {jQuery} objVal 値オブジェクト
        * @param {Array<string|number>} params ルールパラメータ
-       * @param {string|number} params.0 最小選択数
-       * @param {string|number} params.1 最大選択数
+       * @param {string|number} params[0] 最小選択数
+       * @param {string|number} params[1] 最大選択数
        * @returns {string|null} エラーメッセージ(正常時null)
        */
       checkbox: function (field, objVal, params) {
-        const check = objVal.filter(":checked").length,
+        const check = objVal.filter(':checked').length,
           min = Number(params[0]);
         if (2 <= params.length) {
           const max = Number(params[1]);
@@ -984,11 +984,11 @@
 
       /**
        * 正規表現チェック
-       * @param {string} field フィールド名
+       * @param {object} field フィールド
        * @param {jQuery} objVal 値オブジェクト
        * @param {Array<string|RegExp>} params 正規表現パラメータ
-       * @param {string|RegExp} params.0 正規表現(文字列 or 正規表現クラス)
-       * @param {string} params.1 正規表現フラグ(オプション)
+       * @param {string|RegExp} params[0] 正規表現(文字列 or 正規表現クラス)
+       * @param {string} params[1] 正規表現フラグ(オプション)
        * @param {string} params.{1|2} エラーメッセージ(オプション)
        * @returns {string|null} エラーメッセージ(正常時null)
        */
@@ -1030,7 +1030,7 @@
         if (!objVal) {
           ret = false;
         } else if (objVal.attr('type') === 'checkbox') {
-          ret = (0 < objVal.filter(":checked").length);
+          ret = (0 < objVal.filter(':checked').length);
         } else {
           ret = !!helpers.getValue(objVal);
         }
@@ -1176,14 +1176,14 @@
 
       /**
        * 全角カタカナチェック
-       * @param {string} _inpText  文字列
+       * @param {string} _text  文字列
        * @return {boolean} true:OK, false:NG
        */
-      _isAllkana: function (_inpText) {
-        for (let i = 0; i < _inpText.length; i++) {
-          //if(_inpText.charAt(i) < 'ア' || _inpText.charAt(i) > 'ン'){
-          if (_inpText.charAt(i) < 'ァ' || _inpText.charAt(i) > 'ヶ') {
-            if (_inpText.charAt(i) !== 'ー' && _inpText.charAt(i) !== ' ' && _inpText.charAt(i) !== '　') {
+      _isAllKana: function (_text) {
+        for (let i = 0; i < _text.length; i++) {
+          //if(_text.charAt(i) < 'ア' || _text.charAt(i) > 'ン'){
+          if (_text.charAt(i) < 'ァ' || _text.charAt(i) > 'ヶ') {
+            if (_text.charAt(i) !== 'ー' && _text.charAt(i) !== ' ' && _text.charAt(i) !== '　') {
               return false;
             }
           }
@@ -1193,13 +1193,13 @@
 
       /**
        * 全角ひらがなチェック
-       * @param {string} _inpText  文字列
+       * @param {string} _text  文字列
        * @return {boolean} true:OK, false:NG
        */
-      _isAllHiragana: function (_inpText) {
-        for (let i = 0; i < _inpText.length; i++) {
-          if (_inpText.charAt(i) < 'ぁ' || _inpText.charAt(i) > 'ん') {
-            if (_inpText.charAt(i) !== 'ー' && _inpText.charAt(i) !== ' ' && _inpText.charAt(i) !== '　') {
+      _isAllHiragana: function (_text) {
+        for (let i = 0; i < _text.length; i++) {
+          if (_text.charAt(i) < 'ぁ' || _text.charAt(i) > 'ん') {
+            if (_text.charAt(i) !== 'ー' && _text.charAt(i) !== ' ' && _text.charAt(i) !== '　') {
               return false;
             }
           }
