@@ -1,0 +1,14 @@
+{
+  "threshold": 0,
+  "reporters": [
+    "consoleFull"
+  ],
+  "ignore": [
+    "**/__snapshots__/**",
+    "_examples/two_form.html",
+    "_examples/two_form2.html",
+    "_examples/bt3/two_form.html",
+    "_examples/bt3/two_form2.html"
+  ],
+  "absolute": true
+}

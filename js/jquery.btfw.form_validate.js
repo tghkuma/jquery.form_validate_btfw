@@ -12,11 +12,11 @@
  * @exports $ as jQuery
  */
 (function ($, window) {
-  'use strict';
+  'use strict'
 
   /** @default */
-  const pluginName = 'formValidate',
-    pluginSettings = pluginName + '.settings';
+  const pluginName = 'formValidate'
+  const pluginSettings = pluginName + '.settings'
 
   /**
    * @function
@@ -24,7 +24,7 @@
    * @return {Object} jQuery object
    */
   $.fn[pluginName] = function (method) {
-    let settings;
+    let settings
     const methods = {
       /**
        * 初期化処理
@@ -32,23 +32,23 @@
        * @returns {*}
        */
       init: function (options) {
-        settings = $.extend({}, $.fn[pluginName].defaults, options);
+        settings = $.extend({}, $.fn[pluginName].defaults, options)
         return this.each(function () {
-          const $element = $(this);
-          $element.data(pluginSettings, settings);
+          const $element = $(this)
+          $element.data(pluginSettings, settings)
           // イベント登録処理
-          const event_names = ['submit'];
-          $.each(event_names, function () {
-            const func = settings[this];
+          const eventNames = ['submit']
+          $.each(eventNames, function () {
+            const func = settings[this]
             if (typeof func === 'string') {
               $element.on(this + '.' + pluginName, function () {
-                return $element[pluginName](func);
-              });
-            } else if (typeof func === "function") {
-              $element.on(this + '.' + pluginName, func);
+                return $element[pluginName](func)
+              })
+            } else if (typeof func === 'function') {
+              $element.on(this + '.' + pluginName, func)
             }
-          });
-        });
+          })
+        })
       },
       /**
        *
@@ -56,13 +56,13 @@
        */
       destroy: function () {
         return this.each(function () {
-          const $element = $(this);
+          const $element = $(this)
           // イベント削除処理
-          const event_names = ['submit'];
-          $.each(event_names, function () {
-            $element.off(this + '.' + pluginName);
-          });
-        });
+          const eventNames = ['submit']
+          $.each(eventNames, function () {
+            $element.off(this + '.' + pluginName)
+          })
+        })
       },
       /**
        * エラー表示処理
@@ -71,14 +71,14 @@
        * @param {string} arrErrors[].message エラーメッセージ
        */
       dispError: function (arrErrors) {
-        const settings = $(this).data(pluginSettings);
-        const self = this;
+        const settings = $(this).data(pluginSettings)
+        const self = this
         $.each(arrErrors, function (i, error) {
-          methods.setError.apply(self, [error.name, error.message]);
-        });
-        if (0 < arrErrors.length && settings.focusError) {
+          methods.setError.apply(self, [error.name, error.message])
+        })
+        if (arrErrors.length && settings.focusError > 0) {
           // 最初のエラーにフォーカス
-          methods.focusError.apply(this, [arrErrors[0].name]);
+          methods.focusError.apply(this, [arrErrors[0].name])
         }
       },
 
@@ -87,22 +87,22 @@
        * @param {string} name
        */
       focusError: function (name) {
-        const settings = $(this).data(pluginSettings);
-        const field = $(this).find("*[name='" + name + "']");
-        let p = 0;
+        const settings = $(this).data(pluginSettings)
+        const field = $(this).find("*[name='" + name + "']")
+        let p = 0
         if (field.length !== 0) {
-          $(field).trigger('focus');
-          p = $(field).offset().top - $(window).innerHeight() / 2;
+          $(field).trigger('focus')
+          p = $(field).offset().top - $(window).innerHeight() / 2
           if (p < 0) {
-            p = 0;
+            p = 0
           }
         } else {
-          console.warn(helpers.format(settings.messages.NOT_EXISTS_FIELD, name));
+          console.warn(helpers.format(settings.messages.NOT_EXISTS_FIELD, name))
         }
         if ($.fn.animate !== undefined) {
-          $('html,body').animate({scrollTop: p}, settings.focusErrorSpeed);
+          $('html,body').animate({ scrollTop: p }, settings.focusErrorSpeed)
         } else {
-          $('html,body').scrollTop(p);
+          $('html,body').scrollTop(p)
         }
       },
 
@@ -111,17 +111,17 @@
        * @param {string} name 項目名(未指定時全て)
        */
       clearError: function (name) {
-        const settings = $(this).data(pluginSettings);
+        const settings = $(this).data(pluginSettings)
         if (typeof settings.clearError === 'function') {
-          settings.clearError.apply(this, [name]);
+          settings.clearError.apply(this, [name])
         } else if (settings.errorType === 'bs3') {
-          methods.clearErrorBootstrap3.apply(this, [name]);
+          methods.clearErrorBootstrap3.apply(this, [name])
         } else if (settings.errorType === 'tb2') {
-          methods.clearErrorTb2.apply(this, [name]);
+          methods.clearErrorTb2.apply(this, [name])
         } else {
-          methods.clearErrorBootstrap.apply(this, [name]);
+          methods.clearErrorBootstrap.apply(this, [name])
         }
-        return this;
+        return this
       },
 
       /**
@@ -130,17 +130,17 @@
        * @param {string} message エラー文言
        */
       setError: function (name, message) {
-        const settings = $(this).data(pluginSettings);
+        const settings = $(this).data(pluginSettings)
         if (typeof settings.setError === 'function') {
-          settings.setError.apply(this, [name, message]);
+          settings.setError.apply(this, [name, message])
         } else if (settings.errorType === 'bs3') {
-          methods.setErrorBootstrap3.apply(this, [name, message]);
+          methods.setErrorBootstrap3.apply(this, [name, message])
         } else if (settings.errorType === 'tb2') {
-          methods.setErrorTb2.apply(this, [name, message]);
+          methods.setErrorTb2.apply(this, [name, message])
         } else {
-          methods.setErrorBootstrap.apply(this, [name, message]);
+          methods.setErrorBootstrap.apply(this, [name, message])
         }
-        return this;
+        return this
       },
 
       /**
@@ -150,15 +150,15 @@
        */
       clearErrorBootstrap: function (name) {
         if (name) {
-          const field = $(this).find("*[name='" + name + "']");
+          const field = $(this).find("*[name='" + name + "']")
           $(field).removeClass('is-invalid')
-            .nextAll('.invalid-feedback').remove();
+            .nextAll('.invalid-feedback').remove()
         } else {
           $(this).find('.is-invalid')
             .removeClass('is-invalid')
-            .nextAll('.invalid-feedback').remove();
+            .nextAll('.invalid-feedback').remove()
         }
-        return this;
+        return this
       },
 
       /**
@@ -168,21 +168,21 @@
        * @param {string} message エラー文言
        */
       setErrorBootstrap: function (name, message) {
-        const field = $(this).find("*[name='" + name + "']");
-        const error_message = '<div class="invalid-feedback">' + message + '</div>';
+        const field = $(this).find("*[name='" + name + "']")
+        const errorMessage = '<div class="invalid-feedback">' + message + '</div>'
 
         if (['radio', 'checkbox'].indexOf(field.attr('type')) === -1) {
-          $(field).addClass('is-invalid');
+          $(field).addClass('is-invalid')
           if (!$(field).parent().hasClass('input-group')) {
-            $(field).filter(':last').after(error_message);
+            $(field).filter(':last').after(errorMessage)
           } else {
-            $(field).parent().append(error_message);
+            $(field).parent().append(errorMessage)
           }
         } else {
-          const form_check = $(field).closest('.form-check').addClass('is-invalid');
-          $(form_check).filter(':last').after(error_message);
+          const formCheck = $(field).closest('.form-check').addClass('is-invalid')
+          $(formCheck).filter(':last').after(errorMessage)
         }
-        return this;
+        return this
       },
 
       /**
@@ -192,16 +192,16 @@
        */
       clearErrorBootstrap3: function (name) {
         if (name) {
-          const field = $(this).find("*[name='" + name + "']");
+          const field = $(this).find("*[name='" + name + "']")
           $(field).closest('.form-group')
             .removeClass('has-error')
-            .find('.error_message').remove();
+            .find('.errorMessage').remove()
         } else {
           $(this).find('.form-group')
             .removeClass('has-error')
-            .find('.error_message').remove();
+            .find('.errorMessage').remove()
         }
-        return this;
+        return this
       },
 
       /**
@@ -211,20 +211,20 @@
        * @param {string} message エラー文言
        */
       setErrorBootstrap3: function (name, message) {
-        const field = $(this).find("*[name='" + name + "']");
-        const error_message = '<span class="help-block error_message">' + message + '</span>';
-        $(field).closest('.form-group').addClass('has-error');
+        const field = $(this).find("*[name='" + name + "']")
+        const errorMessage = '<span class="help-block errorMessage">' + message + '</span>'
+        $(field).closest('.form-group').addClass('has-error')
         if (['radio', 'checkbox'].indexOf(field.attr('type')) === -1) {
-          const input_group = $(field).closest('.input-group');
-          if ($(input_group).length !== 0) {
-            $(input_group).after(error_message);
+          const inputGroup = $(field).closest('.input-group')
+          if ($(inputGroup).length !== 0) {
+            $(inputGroup).after(errorMessage)
           } else {
-            $(field).filter(':last').after(error_message);
+            $(field).filter(':last').after(errorMessage)
           }
         } else {
-          $(field).filter(':last').parent().after(error_message);
+          $(field).filter(':last').parent().after(errorMessage)
         }
-        return this;
+        return this
       },
 
       /**
@@ -234,16 +234,16 @@
        */
       clearErrorTb2: function (name) {
         if (name) {
-          const field = $(this).find("*[name='" + name + "']");
+          const field = $(this).find("*[name='" + name + "']")
           $(field).closest('.control-group')
             .removeClass('error')
-            .find('.error_message').remove();
+            .find('.errorMessage').remove()
         } else {
           $(this).find('.control-group')
             .removeClass('error')
-            .find('.error_message').remove();
+            .find('.errorMessage').remove()
         }
-        return this;
+        return this
       },
 
       /**
@@ -253,10 +253,10 @@
        * @param {string} message エラー文言
        */
       setErrorTb2: function (name, message) {
-        const field = $(this).find("*[name='" + name + "']");
-        $(field).closest('.control-group').addClass('error');
-        $(field).closest('.controls').append('<div class="help-block error_message">' + message + '</div>');
-        return this;
+        const field = $(this).find("*[name='" + name + "']")
+        $(field).closest('.control-group').addClass('error')
+        $(field).closest('.controls').append('<div class="help-block errorMessage">' + message + '</div>')
+        return this
       },
 
       /**
@@ -264,19 +264,19 @@
        * @param {Object} options オプション
        */
       validate: function (options) {
-        settings = $.extend($(this).data(pluginSettings), options);
+        settings = $.extend($(this).data(pluginSettings), options)
 
-        methods.clearError.apply(this);
-        let result = true;
-        const arrErrors = methods.getValidateResult.apply(this, [settings]);
-        if (0 < arrErrors.length) {
-          methods.dispError.apply(this, [arrErrors]);
-          result = false;
+        methods.clearError.apply(this)
+        let result = true
+        const arrErrors = methods.getValidateResult.apply(this, [settings])
+        if (arrErrors.length > 0) {
+          methods.dispError.apply(this, [arrErrors])
+          result = false
         }
         if (typeof settings.result === 'function') {
-          result = settings.result.apply(this, [result, arrErrors]);
+          result = settings.result.apply(this, [result, arrErrors])
         }
-        return result;
+        return result
       },
 
       /**
@@ -286,22 +286,22 @@
        * @returns {boolean|string[]} エラー値
        */
       validate_alert: function (options) {
-        settings = $.extend($(this).data(pluginSettings), options);
+        settings = $.extend($(this).data(pluginSettings), options)
 
-        let result = true;
-        const arrErrors = methods.getValidateResult.apply(this, [settings]);
-        if (0 < arrErrors.length) {
-          alert(settings.messages.VALIDATE_ERROR + '\n' + helpers.join(arrErrors));
+        let result = true
+        const arrErrors = methods.getValidateResult.apply(this, [settings])
+        if (arrErrors.length > 0) {
+          window.alert(settings.messages.VALIDATE_ERROR + '\n' + helpers.join(arrErrors))
           if (settings.focusError) {
             // 最初のエラーにフォーカス
-            methods.focusError.apply(this, [arrErrors[0].name]);
+            methods.focusError.apply(this, [arrErrors[0].name])
           }
-          result = false;
+          result = false
         }
         if (typeof settings.result === 'function') {
-          result = settings.result.apply(this, [result, arrErrors]);
+          result = settings.result.apply(this, [result, arrErrors])
         }
-        return result;
+        return result
       },
 
       /**
@@ -310,132 +310,131 @@
        * @returns {boolean|string[]} エラー値
        */
       getValidateResult: function (options) {
-        const form = this;
-        settings = $.extend($(this).data(pluginSettings), options);
+        const form = this
+        settings = $.extend($(this).data(pluginSettings), options)
 
-        let arrErrors = [];
+        let arrErrors = []
         const fields = settings.fields ||
-            methods.getFieldsRules.apply(this, [settings]);
+            methods.getFieldsRules.apply(this, [settings])
 
         // 未サポートパラメータ
         if (!Array.isArray(fields)) {
-          return arrErrors;
+          return arrErrors
         }
 
         $.each(fields, function (i, field) {
           if (!field.rules) {
-            return true;
+            return true
           }
 
           // パラメータチェック方法
-          let arrRules = field.rules;
+          let arrRules = field.rules
           if (!Array.isArray(arrRules)) {
-            arrRules = [arrRules];
+            arrRules = [arrRules]
           }
           // パラメータ値
-          const $objVal = $(form).find("*[name='" + field.name + "']");
+          const $objVal = $(form).find("*[name='" + field.name + "']")
           // 値存在チェック
-          const bValueExists = helpers.existsValue($objVal);
+          const bValueExists = helpers.existsValue($objVal)
 
           // 各パラメータのチェック処理
           $.each(arrRules, function (i, rule) {
-            let arrRuleErrors = [];
-            let errors;
-            let params;
+            const arrRuleErrors = []
+            let errors
+            let params
 
-            //------------------
+            // ------------------
             // ルール分岐
-            //------------------
+            // ------------------
             // ルールが配列
             // [ 'ルール名', [<パラメータ配列>]]
             // [ 'ルール名', <パラメータ1>, <パラメータ2>..., <パラメータn> ]
             if (Array.isArray(rule)) {
               if (rule.length === 0) {
-                return;
+                return
               } else if (rule.length === 2) {
-                params = rule[1];
+                params = rule[1]
                 if (!Array.isArray(params)) {
-                  params = [params];
+                  params = [params]
                 }
               } else if (rule.length >= 3) {
-                params = rule.slice(1);
+                params = rule.slice(1)
               }
-              rule = rule[0];
-            }
-            // ルールがObject
-            // { rule:'ルール名', params:[<パラメータ配列>]}
-            else if (typeof rule === 'object') {
+              rule = rule[0]
+            } else if (typeof rule === 'object') {
+              // ルールがObject
+              // { rule:'ルール名', params:[<パラメータ配列>]}
               if (!rule.rule) {
-                return;
+                return
               }
               if (rule.params) {
-                params = rule.params;
+                params = rule.params
                 if (!Array.isArray(params)) {
-                  params = [params];
+                  params = [params]
                 }
               }
-              rule = rule.rule;
-            }
-            // ルールが文字列(旧仕様)
-            else if (typeof rule === 'string') {
+              rule = rule.rule
+            } else if (typeof rule === 'string') {
+              // ルールが文字列(旧仕様)
               // パラメータ解析処理
-              params = rule.split(':', 2);
+              params = rule.split(':', 2)
               if (params[0]) {
-                rule = params[0];
+                rule = params[0]
               }
               if (params[1]) {
                 try {
-                  params = JSON.parse(params[1]);
+                  params = JSON.parse(params[1])
                 } catch (e) {
-                  params = params[1].split(',');
+                  params = params[1].split(',')
                 }
                 if (!Array.isArray(params)) {
-                  params = [params];
+                  params = [params]
                 }
               } else {
-                params = [];
+                params = []
               }
             }
 
             // 独自チェック関数
             if (typeof rule === 'function') {
-              errors = rule.apply(form, [field, $objVal, params, settings]);
-              helpers.pushErrors(arrRuleErrors, field, errors);
+              errors = rule.apply(form, [field, $objVal, params, settings])
+              helpers.pushErrors(arrRuleErrors, field, errors)
             } else if (typeof rule === 'string') {
               // 指定フィールドに値が入っているとき
               if (bValueExists) {
                 if (validateExistsMethods[rule]) {
-                  errors = validateExistsMethods[rule].apply(form, [field, $objVal, params, settings]);
-                  helpers.pushErrors(arrRuleErrors, field, errors);
-                } else {
-                  //$.error( 'validateExistsMethod "' +  rule + '" does not exist in '+pluginName+' plugin!');
+                  errors = validateExistsMethods[rule].apply(form, [field, $objVal, params, settings])
+                  helpers.pushErrors(arrRuleErrors, field, errors)
                 }
-              }
-              // 指定フィールドに値が入っていないとき
-              else {
+                // else {
+                //   $.error( 'validateExistsMethod "' +  rule + '" does not exist in '+pluginName+' plugin!');
+                // }
+              } else {
+                // 指定フィールドに値が入っていないとき
                 // 必須項目チェック
                 if (rule === 'required') {
-                  helpers.pushErrors(arrRuleErrors, field, settings.messages.REQUIRED);
+                  helpers.pushErrors(arrRuleErrors, field, settings.messages.REQUIRED)
                 } else if (rule === 'checkbox') {
-                  errors = validateExistsMethods[rule].apply(form, [field, $objVal, params, settings]);
-                  helpers.pushErrors(arrRuleErrors, field, errors);
+                  errors = validateExistsMethods[rule].apply(form, [field, $objVal, params, settings])
+                  helpers.pushErrors(arrRuleErrors, field, errors)
                 } else if (validateMethods[rule]) {
-                  errors = validateMethods[rule].apply(form, [field, $objVal, params, settings]);
-                  helpers.pushErrors(arrRuleErrors, field, errors);
-                } else {
-                  //$.error( 'validateMethods "' +  rule + '" does not exist in '+pluginName+' plugin!');
+                  errors = validateMethods[rule].apply(form, [field, $objVal, params, settings])
+                  helpers.pushErrors(arrRuleErrors, field, errors)
                 }
+                // else {
+                //   $.error( 'validateMethods "' +  rule + '" does not exist in '+pluginName+' plugin!');
+                // }
               }
             }
 
             // エラー時追加
-            if (arrRuleErrors && 0 < arrRuleErrors.length) {
-              arrErrors = arrErrors.concat(arrRuleErrors);
+            if (arrRuleErrors && arrRuleErrors.length > 0) {
+              arrErrors = arrErrors.concat(arrRuleErrors)
             }
-          });
-          return true;
-        });
-        return arrErrors;
+          })
+          return true
+        })
+        return arrErrors
       },
 
       /**
@@ -443,61 +442,60 @@
        * @returns {Array<Object>}
        */
       getFieldsRules: function () {
-        let fields = [];
-        const formElements = $(this).get(0).elements;
-        Array.from(formElements).forEach(function(element) {
-          const name = element.name;
+        const fields = []
+        const formElements = $(this).get(0).elements
+        Array.from(formElements).forEach(function (element) {
+          const name = element.name
           if (!name) {
-            return;
+            return
           }
-          const type = element.getAttribute('type');
+          const type = element.getAttribute('type')
           if (type === 'radio' || type === 'checkbox') {
-            if(fields.find(item => item.name === element.name)) {
-              return;
+            if (fields.find(item => item.name === element.name)) {
+              return
             }
           }
-          let rules = [];
+          const rules = []
           if (element.required) {
-            rules.push('required');
+            rules.push('required')
           }
           // 属性によるパターン
-          [['minLength','minlength'],['maxLength','maxlength'],'min','max',['pattern','regexp']].forEach(function (attr) {
-            let rule;
+          [['minLength', 'minlength'], ['maxLength', 'maxlength'], 'min', 'max', ['pattern', 'regexp']].forEach(function (attr) {
+            let rule
             if (Array.isArray(attr)) {
-              rule = attr[1];
-              attr = attr[0];
+              rule = attr[1]
+              attr = attr[0]
+            } else {
+              rule = attr
             }
-            else {
-              rule = attr;
-            }
-            const value = element.getAttribute(attr);
+            const value = element.getAttribute(attr)
             if (value !== null) {
-              rules.push([rule, value]);
+              rules.push([rule, value])
             }
-          });
+          })
           // type="xxx"によるバリデート判別
-          let rule;
+          let rule
           switch (type) {
             case 'date':
             case 'email':
             case 'tel':
-              rule = type;
-              break;
+              rule = type
+              break
             case 'number':
-              rule = 'numeric';
-              break;
+              rule = 'numeric'
+              break
             case 'time':
-              rule = ['time','hm'];
-              break;
+              rule = ['time', 'hm']
+              break
           }
           if (rule) {
-            rules.push(rule);
+            rules.push(rule)
           }
-          fields.push({name:name, rules:rules});
-        });
-        return fields;
+          fields.push({ name: name, rules: rules })
+        })
+        return fields
       }
-    };
+    }
 
     /**
      * バリデート処理群
@@ -513,9 +511,9 @@
       numeric: function (field, objVal) {
         // type="number"時の仮対策
         if (objVal[0] && objVal[0].validity && objVal[0].validity.badInput) {
-          return objVal[0].validationMessage;
+          return objVal[0].validationMessage
         }
-        return null;
+        return null
       },
       /**
        * 数値チェック(値なし,エイリアス)
@@ -525,7 +523,7 @@
        * @returns {string|null} エラーメッセージ(正常時null)
        */
       number: function (field, objVal) {
-        return validateMethods.numeric.apply(this, [field, objVal]);
+        return validateMethods.numeric.apply(this, [field, objVal])
       },
 
       /**
@@ -539,10 +537,11 @@
        * @returns {string|null} エラーメッセージ(正常時null)
        */
       zip_ex: function (field, objVal, params, settings) {
-        const zip_after = $(this).find("*[name='" + field.name + settings.zip_suffix + "']");
-        if (objVal && helpers.getValue(objVal) && (!zip_after || !zip_after.val()))
-          return settings.messages.INSUFFICIENT;
-        return null;
+        const zipAfter = $(this).find("*[name='" + field.name + settings.zip_suffix + "']")
+        if (objVal && helpers.getValue(objVal) && (!zipAfter || !zipAfter.val())) {
+          return settings.messages.INSUFFICIENT
+        }
+        return null
       },
 
       /**
@@ -557,67 +556,77 @@
        */
       ymd: function (field, objVal, params) {
         // 変数宣言
-        let arrErrors = [];
+        const arrErrors = []
 
         // 日付オブジェクト取得
-        let year = null, month = null, day = null;
-        let b_year = false, b_month = false, b_day = false;
-        const objY = $(this).find("*[name='" + field.name + settings.ymd_suffix_y + "']");
-        const objM = $(this).find("*[name='" + field.name + settings.ymd_suffix_m + "']");
-        const objD = $(this).find("*[name='" + field.name + settings.ymd_suffix_d + "']");
+        let year = null
+        let month = null
+        let day = null
+        let isYear = false
+        let isMonth = false
+        let isDay = false
+        const objY = $(this).find("*[name='" + field.name + settings.ymd_suffix_y + "']")
+        const objM = $(this).find("*[name='" + field.name + settings.ymd_suffix_m + "']")
+        const objD = $(this).find("*[name='" + field.name + settings.ymd_suffix_d + "']")
         if (objY && objY.val() !== '') {
-          b_year = true;
-          year = objY.val();
+          isYear = true
+          year = objY.val()
         }
         if (objM && objM.val() !== '') {
-          b_month = true;
-          month = objM.val();
+          isMonth = true
+          month = objM.val()
         }
         if (objD && objD.val() !== '') {
-          b_day = true;
-          day = objD.val();
+          isDay = true
+          day = objD.val()
         }
 
         // 日付必須チェック
         if (params[0] === 'required') {
-          if (!b_year)
-            arrErrors.push(helpers.format(settings.messages.REQUIRED_PART, settings.messages.DATE_PART_Y));
-          if (!b_month)
-            arrErrors.push(helpers.format(settings.messages.REQUIRED_PART, settings.messages.DATE_PART_M));
-          if (!b_day)
-            arrErrors.push(helpers.format(settings.messages.REQUIRED_PART, settings.messages.DATE_PART_D));
+          if (!isYear) {
+            arrErrors.push(helpers.format(settings.messages.REQUIRED_PART, settings.messages.DATE_PART_Y))
+          }
+          if (!isMonth) {
+            arrErrors.push(helpers.format(settings.messages.REQUIRED_PART, settings.messages.DATE_PART_M))
+          }
+          if (!isDay) {
+            arrErrors.push(helpers.format(settings.messages.REQUIRED_PART, settings.messages.DATE_PART_D))
+          }
         } else {
           // 日付の年月日が一部のみ入力されているとき
-          if ((b_year || b_month || b_day) && !(b_year && b_month && b_day)) {
-            if (!b_year)
-              arrErrors.push(helpers.format(settings.messages.INSUFFICIENT_PART, settings.messages.DATE_PART_Y));
-            if (!b_month)
-              arrErrors.push(helpers.format(settings.messages.INSUFFICIENT_PART, settings.messages.DATE_PART_M));
-            if (!b_day)
-              arrErrors.push(helpers.format(settings.messages.INSUFFICIENT_PART, settings.messages.DATE_PART_D));
+          if ((isYear || isMonth || isDay) && !(isYear && isMonth && isDay)) {
+            if (!isYear) {
+              arrErrors.push(helpers.format(settings.messages.INSUFFICIENT_PART, settings.messages.DATE_PART_Y))
+            }
+            if (!isMonth) {
+              arrErrors.push(helpers.format(settings.messages.INSUFFICIENT_PART, settings.messages.DATE_PART_M))
+            }
+            if (!isDay) {
+              arrErrors.push(helpers.format(settings.messages.INSUFFICIENT_PART, settings.messages.DATE_PART_D))
+            }
           }
         }
         // 年数値チェック
-        if (b_year && !helpers._isInteger(year)) {
-          arrErrors.push(helpers.format(settings.messages.INTEGER_PART, settings.messages.DATE_PART_Y));
+        if (isYear && !helpers._isInteger(year)) {
+          arrErrors.push(helpers.format(settings.messages.INTEGER_PART, settings.messages.DATE_PART_Y))
         }
         // 月数値チェック
-        if (b_month && !helpers._isInteger(month)) {
-          arrErrors.push(helpers.format(settings.messages.INTEGER_PART, settings.messages.DATE_PART_M));
+        if (isMonth && !helpers._isInteger(month)) {
+          arrErrors.push(helpers.format(settings.messages.INTEGER_PART, settings.messages.DATE_PART_M))
         }
         // 日数値チェック
-        if (b_day && !helpers._isInteger(day)) {
-          arrErrors.push(helpers.format(settings.messages.INTEGER_PART, settings.messages.DATE_PART_D));
+        if (isDay && !helpers._isInteger(day)) {
+          arrErrors.push(helpers.format(settings.messages.INTEGER_PART, settings.messages.DATE_PART_D))
         }
 
         // 年月日チェック
         if (arrErrors.length === 0 && !helpers._isDate(year, month, day)) {
-          arrErrors.push(helpers.format(settings.messages.DATE_INVALID));
+          arrErrors.push(helpers.format(settings.messages.DATE_INVALID))
         }
 
-        return arrErrors;
+        return arrErrors
       }
-    };
+    }
 
     /**
      * パラメータチェック群
@@ -633,10 +642,11 @@
        * @returns {string|null} エラーメッセージ(正常時null)
        */
       confirm: function (field, objVal) {
-        const confirmVal = $(this).find("*[name='" + field.name + settings.confirm_suffix + "']");
-        if (!objVal || !confirmVal || helpers.getValue(objVal) !== confirmVal.val())
-          return helpers.format(settings.messages.CONFIRM, (field.d_name ? field.d_name : settings.messages.CONFIRM_FIELD));
-        return null;
+        const confirmVal = $(this).find("*[name='" + field.name + settings.confirm_suffix + "']")
+        if (!objVal || !confirmVal || helpers.getValue(objVal) !== confirmVal.val()) {
+          return helpers.format(settings.messages.CONFIRM, (field.d_name ? field.d_name : settings.messages.CONFIRM_FIELD))
+        }
+        return null
       },
       /**
        * E-Mailチェック
@@ -645,14 +655,14 @@
        * @returns {string|null} エラーメッセージ(正常時null)
        */
       email: function (field, objVal) {
-        const val = helpers.getValue(objVal);
+        const val = helpers.getValue(objVal)
         if (val) {
-          const email_error = helpers._isEmailEx(val);
-          if (email_error !== '') {
-            return email_error;
+          const errorEmail = helpers._isEmailEx(val)
+          if (errorEmail !== '') {
+            return errorEmail
           }
         }
-        return null;
+        return null
       },
       /**
        * 全角
@@ -662,9 +672,9 @@
        */
       zenkaku: function (field, objVal) {
         if (!helpers._isZenkaku(helpers.getValue(objVal))) {
-          return settings.messages.ZENKAKU;
+          return settings.messages.ZENKAKU
         }
-        return null;
+        return null
       },
       /**
        * 半角
@@ -674,9 +684,9 @@
        */
       hankaku: function (field, objVal) {
         if (!helpers._isHankaku(helpers.getValue(objVal))) {
-          return settings.messages.HANKAKU;
+          return settings.messages.HANKAKU
         }
-        return null;
+        return null
       },
       /**
        * 全角カタカナ
@@ -686,9 +696,9 @@
        */
       zen_katakana: function (field, objVal) {
         if (!helpers._isAllKana(helpers.getValue(objVal))) {
-          return settings.messages.ZEN_KANA;
+          return settings.messages.ZEN_KANA
         }
-        return null;
+        return null
       },
       /**
        * 全角ひらがな
@@ -698,9 +708,9 @@
        */
       hiragana: function (field, objVal) {
         if (!helpers._isAllHiragana(helpers.getValue(objVal))) {
-          return settings.messages.HIRAGANA;
+          return settings.messages.HIRAGANA
         }
-        return null;
+        return null
       },
       /**
        * 電話番号
@@ -710,9 +720,9 @@
        */
       tel: function (field, objVal) {
         if (!helpers._isTel(helpers.getValue(objVal))) {
-          return settings.messages.TEL;
+          return settings.messages.TEL
         }
-        return null;
+        return null
       },
       /**
        * 最小文字数
@@ -723,10 +733,11 @@
        * @returns {string|null} エラーメッセージ(正常時null)
        */
       minlength: function (field, objVal, params) {
-        const min = Number(params[0]);
-        if (helpers.getValue(objVal).length < min)
-          return helpers.format(settings.messages.MIN_LENGTH, min);
-        return null;
+        const min = Number(params[0])
+        if (helpers.getValue(objVal).length < min) {
+          return helpers.format(settings.messages.MIN_LENGTH, min)
+        }
+        return null
       },
       /**
        * 最大文字数
@@ -737,10 +748,11 @@
        * @returns {string|null} エラーメッセージ(正常時null)
        */
       maxlength: function (field, objVal, params) {
-        const max = Number(params[0]);
-        if (max < helpers.getValue(objVal).length)
-          return helpers.format(settings.messages.MAX_LENGTH, max);
-        return null;
+        const max = Number(params[0])
+        if (max < helpers.getValue(objVal).length) {
+          return helpers.format(settings.messages.MAX_LENGTH, max)
+        }
+        return null
       },
       /**
        * 数値チェック
@@ -749,11 +761,11 @@
        * @returns {string|null} エラーメッセージ(正常時null)
        */
       numeric: function (field, objVal) {
-        const val = helpers.getValue(objVal);
-        if (!isFinite(val) || val.indexOf(' ' ) !== -1 || val.indexOf('0x' ) !== -1) {
-          return settings.messages.NUMERICAL_VALUE;
+        const val = helpers.getValue(objVal)
+        if (!isFinite(val) || val.indexOf(' ') !== -1 || val.indexOf('0x') !== -1) {
+          return settings.messages.NUMERICAL_VALUE
         }
-        return null;
+        return null
       },
       /**
        * 数値チェック(エイリアス)
@@ -763,7 +775,7 @@
        * @returns {string|null} エラーメッセージ(正常時null)
        */
       number: function (field, objVal) {
-        return validateExistsMethods.numeric.apply(this, [field, objVal]);
+        return validateExistsMethods.numeric.apply(this, [field, objVal])
       },
       /**
        * 数値桁数チェック
@@ -775,18 +787,18 @@
        * @returns {string|null} エラーメッセージ(正常時null)
        */
       numlength: function (field, objVal, params) {
-        const val = helpers.getValue(objVal);
-        let reg_tmp = params[0],
-          err_message_tmp = params[0];
+        const val = helpers.getValue(objVal)
+        let tmpReg = params[0]
+        let tmpErrMessage = params[0]
         if (params[1]) {
-          reg_tmp += "," + params[1];
-          err_message_tmp += "～" + params[1];
+          tmpReg += ',' + params[1]
+          tmpErrMessage += '～' + params[1]
         }
-        const reg = new RegExp("^\\d{" + reg_tmp + "}$");
+        const reg = new RegExp('^\\d{' + tmpReg + '}$')
         if (!reg.test(val)) {
-          return helpers.format(settings.messages.NUM_LENGTH, err_message_tmp);
+          return helpers.format(settings.messages.NUM_LENGTH, tmpErrMessage)
         }
-        return null;
+        return null
       },
       /**
        * 最小値
@@ -797,14 +809,15 @@
        * @returns {string|null} エラーメッセージ(正常時null)
        */
       min: function (field, objVal, params) {
-        const val = helpers.getValue(objVal);
+        const val = helpers.getValue(objVal)
         if (!helpers._isInteger(val)) {
-          return settings.messages.INTEGER;
+          return settings.messages.INTEGER
         }
-        const min = Number(params[0]);
-        if (val < min)
-          return helpers.format(settings.messages.MIN, min);
-        return null;
+        const min = Number(params[0])
+        if (val < min) {
+          return helpers.format(settings.messages.MIN, min)
+        }
+        return null
       },
       /**
        * 最大値
@@ -815,14 +828,15 @@
        * @returns {string|null} エラーメッセージ(正常時null)
        */
       max: function (field, objVal, params) {
-        const val = helpers.getValue(objVal);
+        const val = helpers.getValue(objVal)
         if (!helpers._isInteger(val)) {
-          return settings.messages.INTEGER;
+          return settings.messages.INTEGER
         }
-        const max = Number(params[0]);
-        if (max < val)
-          return helpers.format(settings.messages.MIN, max);
-        return null;
+        const max = Number(params[0])
+        if (max < val) {
+          return helpers.format(settings.messages.MIN, max)
+        }
+        return null
       },
       /**
        * 数値範囲
@@ -834,15 +848,16 @@
        * @returns {string|null} エラーメッセージ(正常時null)
        */
       range: function (field, objVal, params) {
-        const val = helpers.getValue(objVal);
+        const val = helpers.getValue(objVal)
         if (!helpers._isInteger(val)) {
-          return settings.messages.INTEGER;
+          return settings.messages.INTEGER
         }
-        const min = Number(params[0]),
-          max = Number(params[1]);
-        if (val < min || max < val)
-          return helpers.format(settings.messages.RANGE, min, max);
-        return null;
+        const min = Number(params[0])
+        const max = Number(params[1])
+        if (val < min || max < val) {
+          return helpers.format(settings.messages.RANGE, min, max)
+        }
+        return null
       },
       /**
        * 日付
@@ -851,19 +866,18 @@
        * @returns {string|null} エラーメッセージ(正常時null)
        */
       date: function (field, objVal) {
-        const val = helpers.getValue(objVal),
-          reg = new RegExp("^((\\d{1,4})[/-](\\d{1,2})[/-](\\d{1,2}))$", "g");
+        const val = helpers.getValue(objVal)
         // 1980/1/2
-        //				↓
+        //      ↓
         // 1980/1/2,1980/1/2,1980,1,2
-        if (!val.match(reg)) {
-          return settings.messages.DATE;
+        if (!val.match(/^((\d{1,4})[/-](\d{1,2})[/-](\d{1,2}))$/g)) {
+          return settings.messages.DATE
         }
         // 年月日チェック
         if (!helpers._isDate(RegExp.$2, RegExp.$3, RegExp.$4)) {
-          return settings.messages.DATE_INVALID;
+          return settings.messages.DATE_INVALID
         }
-        return null;
+        return null
       },
       /**
        * 日時チェック
@@ -873,22 +887,21 @@
        * @returns {string|null} エラーメッセージ(正常時null)
        */
       datetime: function (field, objVal) {
-        const val = helpers.getValue(objVal),
-          reg = new RegExp("^((\\d{1,4})[/-](\\d{1,2})[/-](\\d{1,2}))( ((\\d{1,2}):(\\d{1,2})(:(\\d{1,2}))?))?$", 'g');
+        const val = helpers.getValue(objVal)
         // 1980/1/2 24:12:11
         //      ↓
         // 1980/1/2 23:12:11,1980/1/2,1980,1,2, 24:12:11,23:12:11,23,12,11
-        if (!val.match(reg)) {
-          return settings.messages.DATETIME;
+        if (!val.match(/^((\d{1,4})[/-](\d{1,2})[/-](\d{1,2}))( ((\d{1,2}):(\d{1,2})(:(\d{1,2}))?))?$/g)) {
+          return settings.messages.DATETIME
         }
         // 年月日チェック
         if (!helpers._isDate(RegExp.$2, RegExp.$3, RegExp.$4)) {
-          return settings.messages.DATE_INVALID;
+          return settings.messages.DATE_INVALID
         }
         if (RegExp.$6 && !helpers._isTime(RegExp.$7, RegExp.$8, RegExp.$10)) {
-          return settings.messages.TIME_INVALID;
+          return settings.messages.TIME_INVALID
         }
-        return null;
+        return null
       },
       /**
        * 日付チェック
@@ -898,22 +911,21 @@
        * @returns {string|null} エラーメッセージ(正常時null)
        */
       date_ex: function (field, objVal) {
-        const val = helpers.getValue(objVal),
-          reg = new RegExp("^(\\d{1,4})([/-](\\d{1,2})([/-](\\d{1,2}))?)?$");
+        const val = helpers.getValue(objVal)
         // 1980/1/2
         //      ↓
         // 1980/1/2,1980/1/2,1980,1,2
-        if (!val.match(reg)) {
-          return settings.messages.DATE_EX;
+        if (!val.match(/^(\d{1,4})([/-](\d{1,2})([/-](\d{1,2}))?)?$/)) {
+          return settings.messages.DATE_EX
         }
         // 年月日チェック
-        const y = RegExp.$1,
-          m = RegExp.$3 ? RegExp.$3 : 1,
-          d = RegExp.$5 ? RegExp.$5 : 1;
+        const y = RegExp.$1
+        const m = RegExp.$3 ? RegExp.$3 : 1
+        const d = RegExp.$5 ? RegExp.$5 : 1
         if (!helpers._isDate(y, m, d)) {
-          return settings.messages.DATE_INVALID;
+          return settings.messages.DATE_INVALID
         }
-        return null;
+        return null
       },
       /**
        * 時間チェック
@@ -921,30 +933,27 @@
        * @param {object} field フィールド
        * @param {jQuery} objVal 値オブジェクト
        * @param {string[]} params ルールパラメータ
-       * @param {string} params[0] "hm":[hh:mm]の書式でチェック
+       * @param {string} params[0] 'hm':[hh:mm]の書式でチェック
        * @returns {string|null} エラーメッセージ(正常時null)
        */
       time: function (field, objVal, params) {
-        const val = helpers.getValue(objVal);
-        let reg;
-        if (params[0] === "hm") {
-          reg = new RegExp("^(\\d{1,2}):(\\d{1,2})$", "g");
-          if (!val.match(reg)) {
-            return settings.messages.TIME_HM;
+        const val = helpers.getValue(objVal)
+        if (params[0] === 'hm') {
+          if (!val.match(/^(\d{1,2}):(\d{1,2})$/g)) {
+            return settings.messages.TIME_HM
           }
           if (!helpers._isTime(RegExp.$1, RegExp.$2, 0)) {
-            return settings.messages.TIME_INVALID;
+            return settings.messages.TIME_INVALID
           }
         } else {
-          reg = new RegExp("^(\\d{1,2}):(\\d{1,2}):(\\d{1,2})$", "g");
-          if (!val.match(reg)) {
-            return settings.messages.TIME;
+          if (!val.match(/^(\d{1,2}):(\d{1,2}):(\d{1,2})$/g)) {
+            return settings.messages.TIME
           }
           if (!helpers._isTime(RegExp.$1, RegExp.$2, RegExp.$3)) {
-            return settings.messages.TIME_INVALID;
+            return settings.messages.TIME_INVALID
           }
         }
-        return null;
+        return null
       },
       /**
        * 郵便番号
@@ -953,12 +962,11 @@
        * @returns {string|null} エラーメッセージ(正常時null)
        */
       zip: function (field, objVal) {
-        const val = helpers.getValue(objVal),
-          reg = new RegExp("^\\d{1,3}-\\d{1,4}$", "g");
-        if (!val.match(reg)) {
-          return settings.messages.ZIP;
+        const val = helpers.getValue(objVal)
+        if (!val.match(/^\d{1,3}-\d{1,4}$/g)) {
+          return settings.messages.ZIP
         }
-        return null;
+        return null
       },
       /**
        * チェックボックス
@@ -970,15 +978,17 @@
        * @returns {string|null} エラーメッセージ(正常時null)
        */
       checkbox: function (field, objVal, params) {
-        const check = objVal.filter(':checked').length,
-          min = Number(params[0]);
-        if (2 <= params.length) {
-          const max = Number(params[1]);
-          if (check < min || max < check)
-            return helpers.format(settings.messages.CHECKBOX_RANGE, min, max);
+        const check = objVal.filter(':checked').length
+        const min = Number(params[0])
+        if (params.length >= 2) {
+          const max = Number(params[1])
+          if (check < min || max < check) {
+            return helpers.format(settings.messages.CHECKBOX_RANGE, min, max)
+          }
         } else {
-          if (check < min)
-            return helpers.format(settings.messages.CHECKBOX_MIN, min);
+          if (check < min) {
+            return helpers.format(settings.messages.CHECKBOX_MIN, min)
+          }
         }
       },
 
@@ -993,27 +1003,28 @@
        * @returns {string|null} エラーメッセージ(正常時null)
        */
       regexp: function (field, objVal, params) {
-        const val = helpers.getValue(objVal);
-        let reg, err_message;
+        const val = helpers.getValue(objVal)
+        let reg, errorMessage
         if (!Array.isArray(params)) {
-          params = [params];
+          params = [params]
         }
         try {
           if (typeof params[0] === 'string') {
-            reg = new RegExp(params[0], params[1] ? params[1] : undefined);
-            err_message = params[2];
+            reg = new RegExp(params[0], params[1] ? params[1] : undefined)
+            errorMessage = params[2]
           } else {
-            reg = params[0];
-            err_message = params[1];
+            reg = params[0]
+            errorMessage = params[1]
           }
-          if (!reg.test(val))
-            return (err_message ? err_message : settings.messages.REGEXP_INVALID_VALUE);
+          if (!reg.test(val)) {
+            return (errorMessage || settings.messages.REGEXP_INVALID_VALUE)
+          }
         } catch (e) {
-          return settings.messages.REGEXP_INVALID_PARAM;
+          return settings.messages.REGEXP_INVALID_PARAM
         }
-        return null;
+        return null
       }
-    };
+    }
 
     /**
      * 補助処理群
@@ -1026,15 +1037,15 @@
        * @returns {boolean} true:存在する
        */
       existsValue: function (objVal) {
-        let ret;
+        let ret
         if (!objVal) {
-          ret = false;
+          ret = false
         } else if (objVal.attr('type') === 'checkbox') {
-          ret = (0 < objVal.filter(':checked').length);
+          ret = (objVal.filter(':checked').length > 0)
         } else {
-          ret = !!helpers.getValue(objVal);
+          ret = !!helpers.getValue(objVal)
         }
-        return ret;
+        return ret
       },
       /**
        * 値を返す
@@ -1042,19 +1053,19 @@
        * @returns {*} 値
        */
       getValue: function (objVal) {
-        const type = objVal.attr('type');
-        let val;
+        const type = objVal.attr('type')
+        let val
         if (type === 'radio') {
-          val = objVal.filter(':checked').val();
+          val = objVal.filter(':checked').val()
         } else if (type !== 'checkbox') {
-          val = objVal.val();
+          val = objVal.val()
         } else {
-          val = [];
+          val = []
           objVal.filter(':checked').each(function () {
-            val.push($(this).val());
-          });
+            val.push($(this).val())
+          })
         }
-        return val;
+        return val
       },
       /**
        * エラー配列付加
@@ -1065,13 +1076,13 @@
        */
       pushErrors: function (arrErrors, field, errors) {
         if (typeof errors === 'string' && errors) {
-          arrErrors.push({name: field.name, d_name: field.d_name, message: errors});
+          arrErrors.push({ name: field.name, d_name: field.d_name, message: errors })
         } else if (Array.isArray(errors)) {
           $.each(errors, function (i, error) {
-            arrErrors.push({name: field.name, d_name: field.d_name, message: error});
-          });
+            arrErrors.push({ name: field.name, d_name: field.d_name, message: error })
+          })
         }
-        return arrErrors;
+        return arrErrors
       },
       /**
        * 半角英数字チェック
@@ -1080,7 +1091,7 @@
        */
       _isHankaku: function (_text) {
         // 半角以外が存在する場合
-        return !(/[^\x20-\x7E]/).test(_text);
+        return !(/[^\x20-\x7E]/).test(_text)
       },
 
       /**
@@ -1089,7 +1100,7 @@
        * @return {boolean} true:OK, false:NG
        */
       _isZenkaku: function (_text) {
-        return !(/[\w\-.]/).test(_text);
+        return !(/[\w\-.]/).test(_text)
       },
 
       /**
@@ -1099,7 +1110,7 @@
        */
       _isTel: function (inpText) {
         // 「0～9」「-」「(」「)」以外があったらエラー
-        return !(/[^0-9-()]/).test(inpText);
+        return !(/[^0-9-()]/).test(inpText)
       },
 
       /**
@@ -1108,8 +1119,8 @@
        * @return {boolean} true:OK, false:NG
        */
       _isInteger: function (_value) {
-        const test = /^(-\d+|\d*)$/.test('' + _value);
-        return test && !isNaN(_value);
+        const test = /^(-\d+|\d*)$/.test('' + _value)
+        return test && !isNaN(_value)
       },
 
       /**
@@ -1120,32 +1131,32 @@
        * @return {boolean} true:OK, false:NG
        */
       _isDate: function (_year, _month, _day) {
-        //==========================
+        //= =========================
         // 年範囲チェック
-        //==========================
-        if (_year < 1900 || 9999 < _year) {
-          return false;
+        //= =========================
+        if (_year < 1900 || _year > 9999) {
+          return false
         }
-        //==========================
+        //= =========================
         // 月範囲チェック
-        //==========================
-        if (_month < 1 || 12 < _month) {
-          return false;
+        //= =========================
+        if (_month < 1 || _month > 12) {
+          return false
         }
-        //==========================
+        //= =========================
         // 日範囲チェック
-        //==========================
+        //= =========================
         // 最小値
         if (_day < 1) {
-          return false;
+          return false
         }
         // 最大値
-        let arrMaxMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+        const arrMaxMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
         // 2月うるう年補正
         if ((_year % 4 === 0 && _year % 100 !== 0) || _year % 400 === 0) {
-          arrMaxMonth[1] = 29;
+          arrMaxMonth[1] = 29
         }
-        return !(arrMaxMonth[_month - 1] < _day);
+        return !(arrMaxMonth[_month - 1] < _day)
       },
 
       /**
@@ -1156,22 +1167,22 @@
        * @return {boolean} true:OK, false:NG
        */
       _isTime: function (_hour, _minute, _second) {
-        //====================
-        //	時範囲チェック
-        //====================
-        if (_hour < 0 || 24 <= _hour) {
-          return false;
+        // ====================
+        // 時範囲チェック
+        // ====================
+        if (_hour < 0 || _hour >= 24) {
+          return false
         }
-        //=====================
-        //	分範囲チェック
-        //=====================
-        if (_minute < 0 || 60 <= _minute) {
-          return false;
+        // =====================
+        // 分範囲チェック
+        // =====================
+        if (_minute < 0 || _minute >= 60) {
+          return false
         }
-        //=====================
-        //	秒範囲チェック
-        //=====================
-        return !(_second !== null && (_second < 0 || 60 <= _second));
+        // =====================
+        // 秒範囲チェック
+        // =====================
+        return !(_second !== null && (_second < 0 || _second >= 60))
       },
 
       /**
@@ -1181,14 +1192,14 @@
        */
       _isAllKana: function (_text) {
         for (let i = 0; i < _text.length; i++) {
-          //if(_text.charAt(i) < 'ア' || _text.charAt(i) > 'ン'){
+          // if(_text.charAt(i) < 'ア' || _text.charAt(i) > 'ン'){
           if (_text.charAt(i) < 'ァ' || _text.charAt(i) > 'ヶ') {
             if (_text.charAt(i) !== 'ー' && _text.charAt(i) !== ' ' && _text.charAt(i) !== '　') {
-              return false;
+              return false
             }
           }
         }
-        return true;
+        return true
       },
 
       /**
@@ -1200,11 +1211,11 @@
         for (let i = 0; i < _text.length; i++) {
           if (_text.charAt(i) < 'ぁ' || _text.charAt(i) > 'ん') {
             if (_text.charAt(i) !== 'ー' && _text.charAt(i) !== ' ' && _text.charAt(i) !== '　') {
-              return false;
+              return false
             }
           }
         }
-        return true;
+        return true
       },
 
       /**
@@ -1213,27 +1224,27 @@
        * @return {string} "":エラー無し, ""以外:エラー
        */
       _isEmailEx: function (_strEmail) {
-        const emailPat = /^(.+)@(.+)$/,
-          specialChars = "\\(\\)<>@,;:\\\\\\\"\\.\\[\\]",
-          validChars = "[^\\s" + specialChars + "]",
-          // quotedUser="(\"[^\"]*\")",
-          ipDomainPat = /^\[(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})]$/,
-          atom = validChars + '+',
-          // word="(" + atom + "|" + quotedUser + ")",
-          // userPat=new RegExp("^" + word + "(\\." + word + ")*$"),
-          domainPat = new RegExp("^" + atom + "(\\." + atom + ")*$"),
+        const emailPat = /^(.+)@(.+)$/
+        const specialChars = '\\(\\)<>@,;:\\\\"\\.\\[\\]'
+        const validChars = '[^\\s' + specialChars + ']'
+        // const quotedUser = '("[^"]*")';
+        const ipDomainPat = /^\[(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})]$/
+        const atom = validChars + '+'
+        // const word = '(' + atom + '|' + quotedUser + ')';
+        // const userPat = new RegExp('^' + word + '(\.' + word + ')*$');
+        const domainPat = new RegExp('^' + atom + '(\\.' + atom + ')*$')
 
-          // 最初の「@」で分割
-          matchArray = _strEmail.match(emailPat);
+        // 最初の「@」で分割
+        const matchArray = _strEmail.match(emailPat)
 
         // 「@」がない
         if (matchArray === null) {
-          return settings.messages.MAIL_NO_AT;
+          return settings.messages.MAIL_NO_AT
         }
 
         // ユーザーとドメインとして格納
         // const user=matchArray[1];
-        const domain = matchArray[2];
+        const domain = matchArray[2]
 
         // KUMA:携帯用パッチ
         /*
@@ -1243,43 +1254,43 @@
         }
         */
         // ドメイン名のIPパターンチェック
-        const IPArray = domain.match(ipDomainPat);
+        const IPArray = domain.match(ipDomainPat)
         if (IPArray !== null) {
           for (let i = 1; i <= 4; i++) {
             if (IPArray[i] > 255) {
-              return settings.messages.MAIL_INVALID_IP;
+              return settings.messages.MAIL_INVALID_IP
             }
           }
         }
 
         // ドメイン名パターンチェック
-        const domainArray = domain.match(domainPat);
+        const domainArray = domain.match(domainPat)
         if (domainArray === null) {
-          return settings.messages.MAIL_NO_DOMAIN;
+          return settings.messages.MAIL_NO_DOMAIN
         }
 
-        const atomPat = new RegExp(atom, "g"),
-          domArr = domain.match(atomPat),
-          len = domArr.length;
+        const atomPat = new RegExp(atom, 'g')
+        const domArr = domain.match(atomPat)
+        const len = domArr.length
 
         // 最後のドメインが2文字か3文字の以外のとき、エラー
         // ex) jp,comはOK
-        if (domArr[domArr.length - 1].length < 2 || 4 < domArr[domArr.length - 1].length) {
-          return settings.messages.MAIL_INVALID_LOCALE;
+        if (domArr[domArr.length - 1].length < 2 || domArr[domArr.length - 1].length > 4) {
+          return settings.messages.MAIL_INVALID_LOCALE
         }
 
         if (len < 2) {
-          return settings.messages.MAIL_INVALID_DOMAIN;
+          return settings.messages.MAIL_INVALID_DOMAIN
         }
-        return "";
+        return ''
       },
       format: function () {
-        const args = Array.prototype.slice.call(arguments, 0);
-        let message = args.shift();
+        const args = Array.prototype.slice.call(arguments, 0)
+        let message = args.shift()
         $.each(args, function (index, element) {
-          message = message.replace(new RegExp('\\{' + index + '}', 'g'), element);
-        });
-        return message;
+          message = message.replace(new RegExp('\\{' + index + '}', 'g'), element)
+        })
+        return message
       },
       /**
        * エラーメッセージを返す
@@ -1288,33 +1299,33 @@
        * @returns {string} エラーメッセージ
        */
       join: function (arrErrors, delimiter) {
-        if (delimiter === undefined) delimiter = '\n';
-        let arrErrorMessages = [];
+        if (delimiter === undefined) delimiter = '\n'
+        const arrErrorMessages = []
         $.each(arrErrors, function (i, error) {
           if (typeof error === 'string' && error) {
-            arrErrorMessages.push(error);
+            arrErrorMessages.push(error)
           } else {
-            //-----------------------
+            // -----------------------
             // エラー情報追加
             // error.name フィールド名
             // error.d_name フィールド表示名
             // error.message エラーメッセージ
-            //-----------------------
-            arrErrorMessages.push((error.d_name ? error.d_name : error.name) + ' : ' + error.message);
+            // -----------------------
+            arrErrorMessages.push((error.d_name ? error.d_name : error.name) + ' : ' + error.message)
           }
-        });
-        return arrErrorMessages.join(delimiter);
+        })
+        return arrErrorMessages.join(delimiter)
       }
-    };
+    }
 
     if (methods[method]) {
-      return methods[method].apply(this, Array.prototype.slice.call(arguments, 1));
+      return methods[method].apply(this, Array.prototype.slice.call(arguments, 1))
     } else if (typeof method === 'object' || !method) {
-      return methods.init.apply(this, arguments);
+      return methods.init.apply(this, arguments)
     } else {
-      $.error('Method "' + method + '" does not exist in ' + pluginName + ' plugin!');
+      $.error('Method "' + method + '" does not exist in ' + pluginName + ' plugin!')
     }
-  };
+  }
   /**
    * デフォルト設定値
    * @external:"jQuery.fn".formValidate.defaults
@@ -1381,8 +1392,8 @@
       MAIL_INVALID_LOCALE: '正しくありません(LOCALE).',
       MAIL_INVALID_DOMAIN: 'ドメイン名の書式が誤っています.',
       // その他
-      NOT_EXISTS_FIELD: 'フィールド名[{0}]が存在しません'
+      NOT_EXISTS_FIELD: 'フィールド名[{0}]が存在しません.'
     }
-  };
-
-})(jQuery, window, document);
+  }
+// eslint-disable-next-line no-undef
+})(jQuery, window, document)
