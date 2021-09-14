@@ -1,5 +1,7 @@
 # JQuery Form Validate(Bootstrap4/Bootstrap3/TwitterBootstrap2.x)
 
+[![GitHub Super-Linter](https://github.com/tghkuma/jquery.form_validate_btfw/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
+
 ## 解説
 このプログラムは、Bootstrap形式のフォーム値のValidateを行う。
 
