@@ -10,21 +10,21 @@
 Validate定義
 Submit時にValidateを行う場合。
 
-````javascript
+```javascript
 $("フォーム").formValidate({ <オプション>,fields:[
  { name:'<フィールド名1>'[, d_name:'<フィールド表示名1>'][, rules:<ルール or ルール配列>]},
                     :
  { name:'<フィールド名n>', d_name:'<フィールド表示名n>', rules:<ルール or ルール配列>}
 ]});
-````
+```
 
 別のタイミングでValidateを行う場合。
 
-````javascript
+```javascript
 $("フォーム").formValidate({ submit:null,fields:<フィールド定義配列>});
                     :
 $("フォーム").formValidate('validate');
-````
+```
 
 ### オプション
 
@@ -52,9 +52,9 @@ rules | Validateルール.<br>1件の場合はルール文字列.複数の場合
 
 下記の書式でメソッドを実行できる。
 
-````javascript
+```javascript
 $("フォーム").formValidate('メソッド名'[,<パラメータ1>[...,<パラメータn>]);
-````
+```
 
 メソッド名 |パラメータ| 機能
 --- | --- | ---
@@ -106,35 +106,35 @@ Alert,独自エラー表示では対応可能。
 
 #### 配列版
 その1
-````
+```plaintext
 [<ルール名>,<パラメータ1>,<パラメータ2>...,<パラメータn>]
-````
+```
 その2
-````
+```plaintext
 [<ルール名>,[<パラメータ1>,<パラメータ2>...,<パラメータn>]]
-````
+```
 
 #### Object版
-````
+```plaintext
 {rule:<ルール名>,params:[<パラメータ1>,<パラメータ2>...,<パラメータn>}
-````
+```
 
 #### 文字列版
-````
+```plaintext
 <ルール名>:<パラメータ1>[,<パラメータ2>[...,<パラメータn>]
-````
+```
 
 但し、正規表現の様にパラメータ中に「,」が必要な場合は、パラメータをJSON形式に変換して定義する。
 
-````
+```plaintext
 'regexp:'+JSON.stringify(["^[a-z\\d,-_]+?$",'gi',"入力可能文字は英数字,-_です"])
-````
+```
 
 ### 独自Validate関数
 
 下記書式で実装する
 
-````javascript
+```javascript
 /*
 * サンプル関数
 * @param string field フィールド名
@@ -154,28 +154,28 @@ function funcValidate(field, objVal, params){
         return '「'+params[0]+'」は使用できません.');
     return null;
 }
-````
+```
 
 ## エラーメッセージ配列
 
 getValidateResultメソッドの戻り値はエラーメッセージは下記構造で返す。
 
-````javascript
+```javascript
 [
  { name:'<フィールド名1>', d_name:'<フィールド表示名1>', message:'<エラーメッセージ>'},
                     :
  { name:'<フィールド名n>', d_name:'<フィールド表示名n>', message:'<エラーメッセージ>'}
 ];
-````
+```
 1フィールドに複数ルールが定義されている等、複数のエラーが出た場合は同じフィールド名で複数のエラーメッセージを返す。
 
-````javascript
+```javascript
 [
  { name:'NAME_KANA', d_name:'名前(かな)', message:'全角ひらがなで入力してください.'},
  { name:'NAME_KANA', d_name:'名前(かな)', message:'20文字以下で入力して下さい.'},
                     :
 ];
-````
+```
 
 ## HTML5バリデーション準拠
 
@@ -233,7 +233,7 @@ Alert,独自エラー表示では対応可能。
 
 ### CDN
 
-https://cdn.jsdelivr.net/gh/tghkuma/jquery.form_validate_btfw@1.7.x/js/jquery.btfw.form_validate.min.js
+`https://cdn.jsdelivr.net/gh/tghkuma/jquery.form_validate_btfw@1.8.x/js/jquery.btfw.form_validate.min.js`
 
 ## Copyright
 
