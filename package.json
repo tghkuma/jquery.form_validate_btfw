@@ -1,6 +1,6 @@
 {
   "name": "jquery.form_validate_btfw",
-  "version": "1.8.1",
+  "version": "1.8.２",
   "description": "Bootstrap形式のフォーム値のValidateを行う。",
   "main": "index.js",
   "directories": {
