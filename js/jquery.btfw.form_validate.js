@@ -179,7 +179,7 @@
             $(field).parent().append(errorMessage)
           }
         } else {
-          const formCheck = $(field).closest('.form-check').addClass('is-invalid')
+          const formCheck = $(field).addClass('is-invalid').closest('.form-check').addClass('is-invalid')
           $(formCheck).filter(':last').after(errorMessage)
         }
         return this
@@ -1221,7 +1221,7 @@
       /**
        * EMailチェック
        * @param {string} _strEmail  EMAIL
-       * @return {string} "":エラー無し, ""以外:エラー
+       * @return {string} '':エラー無し, ''以外:エラー
        */
       _isEmailEx: function (_strEmail) {
         const emailPat = /^(.+)@(.+)$/
