@@ -4,26 +4,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta charset="utf-8">
   <title>2フォーム(別条件)</title>
-  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-  <script src="//code.jquery.com/jquery-3.4.1.min.js"></script>
-  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-  <script src="../../js/jquery.btfw.form_validate.js"></script>
-  <script>
-    $(function() {
-      $("form[name=form]").formValidate({ errorType: 'bs3', fields:[
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+</head>
+<body>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+<script src="../../js/jquery.btfw.form_validate.js"></script>
+<script>
+  $(function() {
+    $("form[name=form]").formValidate({ errorType: 'bs3', fields:[
         { name:'name', d_name:'名前', rules:['required', 'zenkaku']},
         { name:'birthday', d_name:'日付', rules:['date']}
       ]});
-      $("form[name=form2]").formValidate({ fields:[
-          { name:'account', d_name:'アカウント', rules:['required', 'minlength:2', 'hankaku',
-              { rule:'regexp', params:[/^[A-Z\d_-]*$/i, '英数字_-のみ使用出来ます']}]},
-          { name:'password', d_name:'パスワード', rules:['required', 'hankaku', 'confirm',
-              ['regexp',[/^[A-Z\d]*$/i, '英数字のみ使用出来ます']]]}
+    $("form[name=form2]").formValidate({ fields:[
+        { name:'account', d_name:'アカウント', rules:['required', 'minlength:2', 'hankaku',
+            { rule:'regexp', params:[/^[A-Z\d_-]*$/i, '英数字_-のみ使用出来ます']}]},
+        { name:'password', d_name:'パスワード', rules:['required', 'hankaku', 'confirm',
+            ['regexp',[/^[A-Z\d]*$/i, '英数字のみ使用出来ます']]]}
       ]});
-    });
-  </script>
-</head>
-<body>
+  });
+</script>
 <div class="container">
   <div class="content">
     <h1>2フォーム(別条件)</h1>
@@ -31,43 +31,55 @@
     <form name="form" action="#" method="post" class="form-horizontal">
       <fieldset>
         <div class="form-group">
-          <label class="control-label col-sm-4" for="id_name">名前</label>
+          <label class="control-label col-sm-4" for="id-name">名前</label>
           <div class="col-sm-8">
-            <input type="text" class="form-control" id="id_name" name="name" size="64" maxlength="64" placeholder="必須項目/全角">
+            <input type="text" class="form-control" id="id-name" name="name" size="64" maxlength="64" placeholder="必須項目/全角">
           </div>
         </div>
         <div class="form-group">
-          <label class="control-label col-sm-4" for="id_birthday">誕生日</label>
+          <label class="control-label col-sm-4" for="id-birthday">誕生日</label>
           <div class="col-sm-8">
-            <input type="text" class="form-control" id="id_birthday" name="birthday" value="エラー値">
+            <input type="text" class="form-control" id="id-birthday" name="birthday" value="エラー値">
           </div>
         </div>
       </fieldset>
+      <!--
+      // jscpd:ignore-start
+      -->
       <div class="form-actions" style="text-align: center">
         <input type="submit" class="btn btn-primary" value="登録">
       </div>
+      <!--
+      // jscpd:ignore-end
+      -->
     </form>
     <h2>フォーム2</h2>
     <form name="form2" action="#" method="post" class="form-horizontal">
       <fieldset>
         <div class="form-group">
-          <label class="control-label col-sm-4" for="id_account">アカウント</label>
+          <label class="control-label col-sm-4" for="id-account">アカウント</label>
           <div class="col-sm-8">
-            <input type="text" class="form-control" id="id_account" name="account" size="64" maxlength="64" placeholder="必須項目,半角">
+            <input type="text" class="form-control" id="id-account" name="account" size="64" maxlength="64" placeholder="必須項目,半角">
           </div>
         </div>
         <div class="form-group">
-          <label class="control-label col-sm-4" for="id_password">パスワード</label>
+          <label class="control-label col-sm-4" for="id-password">パスワード</label>
           <div class="col-sm-8">
-            <input type="password" class="form-control" id="id_password" name="password" size="32" maxlength="16" placeholder="必須項目,半角"><br>
+            <input type="password" class="form-control" id="id-password" name="password" size="32" maxlength="16" placeholder="必須項目,半角"><br>
             <input type="password" class="form-control" name="password_confirm" size="32" maxlength="16" placeholder="確認パスワード">
             <span class="help-block">確認のためパスワードをもう一度入力してください</span>
           </div>
         </div>
       </fieldset>
+      <!--
+      // jscpd:ignore-start
+      -->
       <div class="form-actions" style="text-align: center">
         <input type="submit" class="btn btn-primary" value="登録">
       </div>
+      <!--
+      // jscpd:ignore-end
+      -->
     </form>
     <a href="index.html">一覧へ</a>
 
