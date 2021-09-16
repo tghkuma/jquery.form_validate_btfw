@@ -229,7 +229,9 @@ Alert,独自エラー表示では対応可能。
 
 ## build(minify)手順
 
-「[compress.sh](compress.sh)」を参照
+```shell
+npm run compress
+```
 
 ### CDN
 
@@ -237,4 +239,4 @@ Alert,独自エラー表示では対応可能。
 
 ## Copyright
 
-Copyright &copy; 2014-2020 [Team-Grasshopper Co., Ltd.](https://team-grasshopper.info/)
+Copyright &copy; 2014-2021 [Team-Grasshopper Co., Ltd.](https://team-grasshopper.info/)

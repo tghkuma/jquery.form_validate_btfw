@@ -1395,5 +1395,4 @@
       NOT_EXISTS_FIELD: 'フィールド名[{0}]が存在しません.'
     }
   }
-// eslint-disable-next-line no-undef
-})(jQuery, window, document)
+})(window.jQuery, window, document)

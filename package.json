@@ -17,6 +17,8 @@
     "test": "eslint js/*.js",
     "jsdoc": "jsdoc js/ -d jsdoc/",
     "compress": "webpack --entry ./js/jquery.btfw.form_validate.js --output-path ./js --output-filename jquery.btfw.form_validate.min.js --mode=\"production\" --devtool source-map",
+    "standard": "standard ./js/jquery.btfw.form_validate.js",
+    "standard:fix": "standard --fix ./js/jquery.btfw.form_validate.js",
     "super-lint": "docker run -e RUN_LOCAL=true -v `pwd`:/tmp/lint github/super-linter"
   },
   "repository": {
