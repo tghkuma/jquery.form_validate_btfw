@@ -306,7 +306,7 @@
 
       /**
        * パラメータチェック結果取得
-       * @param {Object} options
+       * @param {Object} [options] オプションフィールド情報
        * @returns {boolean|string[]} エラー値
        */
       getValidateResult: function (options) {
