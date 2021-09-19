@@ -2,7 +2,7 @@
   "name": "jquery.form_validate_btfw",
   "version": "1.8.２",
   "description": "Bootstrap形式のフォーム値のValidateを行う。",
-  "main": "index.js",
+  "main": "js/jquery.form_validate_btfw.min.js",
   "directories": {
     "example": "examples"
   },
@@ -25,7 +25,7 @@
     "type": "git",
     "url": "git+https://github.com/tghkuma/jquery.form_validate_btfw.git"
   },
-  "author": "",
+  "author": "Team-Grasshopper Co., Ltd.",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/tghkuma/jquery.form_validate_btfw/issues"

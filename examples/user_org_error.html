@@ -13,12 +13,12 @@
 <script src="../js/jquery.btfw.form_validate.js"></script>
 <script>
   $(function() {
-    let $form = $("form[name=form]");
-    let $alert = $("#id-alert");
+    const $form = $('form[name=form]');
+    const $alert = $('#id-alert');
 
     // エラー結果取得
-    let funcDispError = function() {
-      let errors = $form.formValidate('getValidateResult');
+    const funcDispError = function() {
+      const errors = $form.formValidate('getValidateResult');
       if (errors.length > 0) {
         let alert = [];
         errors.forEach (function(error){
