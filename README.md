@@ -1,10 +1,9 @@
 # JQuery Form Validate(Bootstrap4/Bootstrap3/TwitterBootstrap2.x)
 
-[![GitHub Super-Linter](https://github.com/tghkuma/jquery.form_validate_btfw/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
-
-## 解説
-
 このプログラムは、Bootstrap形式のフォーム値のValidateを行う。
+
+[![GitHub Super-Linter](https://github.com/tghkuma/jquery.form_validate_btfw/workflows/Lint%20Code%20Base/badge.svg)](https://github.com/marketplace/actions/super-linter)
+[![jsDelivr](https://data.jsdelivr.com/v1/package/gh/tghkuma/jquery.form_validate_btfw/badge)](https://www.jsdelivr.com/package/gh/tghkuma/jquery.form_validate_btfw)
 
 ## 書式
 
@@ -79,13 +78,12 @@ zenkaku | _なし_ |全角
 hankaku | _なし_ |半角
 zen_katakana | _なし_ |全角カタカナ
 hiragana | _なし_ |全角ひらがな
-minlength|<数値>|最小文字数
-maxlength|<数値>|最大文字数
-numlength|<数値>[,<数値>]|最小文字数[最小～最大文字数]
+minlength|<最小文字数>|最小文字数
+maxlength|<最大文字数>|最大文字数
+numlength|<最小文字数>[,<最大文字数>]|最小文字数[最小～最大文字数]
 numeric | _なし_ | 数値
-number | _なし_ | numericのエイリアス
-min|<数値>|最小値
-max|<数値>|最大値
+min|<最小値>|最小値
+max|<最大値>|最大値
 checkbox|<最少選択数>[,<最大選択数>]| チェックボックスの選択チェック
 range|<最小値>,<最大値>|数値範囲
 date | _なし_ |日付
@@ -181,7 +179,7 @@ getValidateResultメソッドの戻り値はエラーメッセージは下記構
 ## HTML5バリデーション準拠
 
 `fields` を指定しないと、指定フォームの[HTMLFormControlsCollection](https://html.spec.whatwg.org/multipage/common-dom-interfaces.html#htmlformcontrolscollection) と入力フォームのHTML5準拠バリデーションルールから自動生成する。  
-受動で生成する場合、`getFieldsRules` メソッドを使用する。
+手動で生成する場合、`getFieldsRules` メソッドを使用する。
 
 対応しているバリデーションは下記の通り
 
@@ -236,7 +234,7 @@ npm run compress
 
 ### CDN
 
-`https://cdn.jsdelivr.net/gh/tghkuma/jquery.form_validate_btfw@1.8.x/js/jquery.btfw.form_validate.min.js`
+`https://cdn.jsdelivr.net/gh/tghkuma/jquery.form_validate_btfw@1.8/js/jquery.btfw.form_validate.min.js`
 
 ## Copyright
 
