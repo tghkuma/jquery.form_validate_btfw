@@ -5,10 +5,29 @@
  * @see https://github.com/tghkuma/jquery.form_validate_btfw
  * @copyright {@link https://team-grasshopper.info/ Team-Grasshopper}
  */
+
+/**
+ * See (https://jquery.com/).
+ * @name jQuery
+ * @class
+ * See the jQuery Library  (https://jquery.com/) for full details.  This just
+ * documents the function and classes that are added to jQuery by this plug-in.
+ */
+
+/**
+ * See (https://jquery.com/)
+ * @name fn
+ * @class
+ * See the jQuery Library  (https://jquery.com/) for full details.  This just
+ * documents the function and classes that are added to jQuery by this plug-in.
+ * @memberOf jQuery
+ */
+
 /**
  * @class
  * @name jQuery
  * @namespace jQuery
+ * @external jQuery
  * @exports $ as jQuery
  */
 (function ($, window) {
@@ -19,9 +38,10 @@
   const pluginSettings = pluginName + '.settings'
 
   /**
-   * @function
-   * @param {Object} method
-   * @return {Object} jQuery object
+   * formValidate Plugin - an awesome jQuery plugin.
+   *
+   * @class formValidate
+   * @memberOf jQuery.fn
    */
   $.fn[pluginName] = function (method) {
     let settings
@@ -179,7 +199,7 @@
             $(field).parent().append(errorMessage)
           }
         } else {
-          const formCheck = $(field).closest('.form-check').addClass('is-invalid')
+          const formCheck = $(field).addClass('is-invalid').closest('.form-check').addClass('is-invalid')
           $(formCheck).filter(':last').after(errorMessage)
         }
         return this
@@ -306,7 +326,7 @@
 
       /**
        * パラメータチェック結果取得
-       * @param {Object} options
+       * @param {Object} [options] オプションフィールド情報
        * @returns {boolean|string[]} エラー値
        */
       getValidateResult: function (options) {
@@ -551,7 +571,7 @@
        * @param {string} field.name フィールド物理名
        * @param {jQuery} objVal 値オブジェクト
        * @param {string[]} params ルールパラメータ
-       * @param {string} params[0] "required":必須チェック
+       * @param {string} params.0 "required":必須チェック
        * @returns {string[]} エラー一覧(正常時空配列)
        */
       ymd: function (field, objVal, params) {
@@ -729,7 +749,7 @@
        * @param {object} field フィールド
        * @param {jQuery} objVal 値オブジェクト
        * @param {Array<string|number>} params ルールパラメータ
-       * @param {string|number} params[0] 最小文字数
+       * @param {string|number} params.0 最小文字数
        * @returns {string|null} エラーメッセージ(正常時null)
        */
       minlength: function (field, objVal, params) {
@@ -744,7 +764,7 @@
        * @param {object} field フィールド
        * @param {jQuery} objVal 値オブジェクト
        * @param {Array<string|number>} params ルールパラメータ
-       * @param {string|number} params[0] 最大文字数
+       * @param {string|number} params.0 最大文字数
        * @returns {string|null} エラーメッセージ(正常時null)
        */
       maxlength: function (field, objVal, params) {
@@ -782,8 +802,8 @@
        * @param {object} field フィールド
        * @param {jQuery} objVal 値オブジェクト
        * @param {Array<string|number>} params ルールパラメータ
-       * @param {string|number} params[0] 最小桁数
-       * @param {string|number} params[1] 最大桁数
+       * @param {string|number} params.0 最小桁数
+       * @param {string|number} params.1 最大桁数
        * @returns {string|null} エラーメッセージ(正常時null)
        */
       numlength: function (field, objVal, params) {
@@ -805,7 +825,7 @@
        * @param {object} field フィールド
        * @param {jQuery} objVal 値オブジェクト
        * @param {Array<string|number>} params ルールパラメータ
-       * @param {string|number} params[0] 最小値
+       * @param {string|number} params.0 最小値
        * @returns {string|null} エラーメッセージ(正常時null)
        */
       min: function (field, objVal, params) {
@@ -824,7 +844,7 @@
        * @param {object} field フィールド
        * @param {jQuery} objVal 値オブジェクト
        * @param {Array<string|number>} params ルールパラメータ
-       * @param {string|number} params[0] 最大値
+       * @param {string|number} params.0 最大値
        * @returns {string|null} エラーメッセージ(正常時null)
        */
       max: function (field, objVal, params) {
@@ -843,8 +863,8 @@
        * @param {object} field フィールド
        * @param {jQuery} objVal 値オブジェクト
        * @param {Array<string|number>} params ルールパラメータ
-       * @param {string|number} params[0] 最小値
-       * @param {string|number} params[1] 最大値
+       * @param {string|number} params.0 最小値
+       * @param {string|number} params.1 最大値
        * @returns {string|null} エラーメッセージ(正常時null)
        */
       range: function (field, objVal, params) {
@@ -933,7 +953,7 @@
        * @param {object} field フィールド
        * @param {jQuery} objVal 値オブジェクト
        * @param {string[]} params ルールパラメータ
-       * @param {string} params[0] 'hm':[hh:mm]の書式でチェック
+       * @param {string} params.0 'hm':[hh:mm]の書式でチェック
        * @returns {string|null} エラーメッセージ(正常時null)
        */
       time: function (field, objVal, params) {
@@ -973,8 +993,8 @@
        * @param {object} field フィールド
        * @param {jQuery} objVal 値オブジェクト
        * @param {Array<string|number>} params ルールパラメータ
-       * @param {string|number} params[0] 最小選択数
-       * @param {string|number} params[1] 最大選択数
+       * @param {string|number} params.0 最小選択数
+       * @param {string|number} params.1 最大選択数
        * @returns {string|null} エラーメッセージ(正常時null)
        */
       checkbox: function (field, objVal, params) {
@@ -997,8 +1017,8 @@
        * @param {object} field フィールド
        * @param {jQuery} objVal 値オブジェクト
        * @param {Array<string|RegExp>} params 正規表現パラメータ
-       * @param {string|RegExp} params[0] 正規表現(文字列 or 正規表現クラス)
-       * @param {string} params[1] 正規表現フラグ(オプション)
+       * @param {string|RegExp} params.0 正規表現(文字列 or 正規表現クラス)
+       * @param {string} params.1 正規表現フラグ(オプション)
        * @param {string} params.{1|2} エラーメッセージ(オプション)
        * @returns {string|null} エラーメッセージ(正常時null)
        */
@@ -1221,7 +1241,7 @@
       /**
        * EMailチェック
        * @param {string} _strEmail  EMAIL
-       * @return {string} "":エラー無し, ""以外:エラー
+       * @return {string} '':エラー無し, ''以外:エラー
        */
       _isEmailEx: function (_strEmail) {
         const emailPat = /^(.+)@(.+)$/
